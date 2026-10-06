@@ -1,6 +1,6 @@
 {
   "name": "rapidfire-cli",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Terminal overlay and shell passthrough REPL with instant developer scaffolding recipes",
   "main": "bin/rapidfire.js",
   "bin": {
