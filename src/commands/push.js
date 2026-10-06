@@ -270,6 +270,24 @@ async function handlePush(rawArgs, context = {}) {
       message: commitMessage
     };
   } catch (pushErr) {
+    const errText = (pushErr.message || '') + (pushErr.stderr || '');
+    if (errText.includes('non-fast-forward') || errText.includes('fetch first') || errText.includes('behind')) {
+      console.log(`\n${yellow}[rapidfire-git] Remote origin/${targetBranch} has newer commits. Syncing via git pull --rebase...${reset}`);
+      try {
+        run(`git pull --rebase origin "${targetBranch}"`, { cwd });
+        console.log(`${cyan}[rapidfire-git] Retrying push to origin/${targetBranch}...${reset}`);
+        run(`git push -u origin "${targetBranch}"`, { cwd });
+        console.log(`\n${green}${bold}✔ Successfully synced and pushed to origin/${targetBranch}!${reset}\n`);
+        return {
+          success: true,
+          branch: targetBranch,
+          commitMade,
+          message: commitMessage
+        };
+      } catch (syncErr) {
+        console.error(`\n${red}[rapidfire-git] Automatic sync failed:${reset} ${syncErr.message}\n`);
+      }
+    }
     console.error(`\n${red}[rapidfire-git] Push error:${reset} ${pushErr.message}\n`);
     return {
       success: false,
