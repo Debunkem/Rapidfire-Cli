@@ -1,6 +1,6 @@
 {
   "name": "rapidfire-cli",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Terminal overlay and shell passthrough REPL with instant developer scaffolding recipes",
   "main": "bin/rapidfire.js",
   "bin": {
@@ -24,7 +24,7 @@
     "terminal",
     "developer-tools"
   ],
-  "author": "Debunkem (https://github.com/Debunkem)",
+  "author": "Vedansh Shrivastava (@Debunkem) (https://github.com/Debunkem)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Debunkem/rapidfire-cli.git"
