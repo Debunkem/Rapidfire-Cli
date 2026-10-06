@@ -246,6 +246,7 @@ key clear
 |---|---|---|
 | `help` | General | Display the interactive command manual |
 | `setup <recipe> <folder>` | Scaffolding | Scaffold any of the 13 full-stack or standalone projects |
+| `explain [path]` | AI Analysis | Explains codebase architecture, folder tree, or source file role |
 | `ask <question>` | AI Companion | Technical Q&A with conversational memory & 1-click package installer |
 | `ask clear` | AI Companion | Clear conversation context memory |
 | `suggest <description>` | AI Companion | Recommends optimal architecture with interactive `(Y/N)` scaffold prompt |
@@ -272,9 +273,9 @@ npm test
 
 ```text
 ======================================================
-Summary: 19 passed, 0 failed (19 total)
+Summary: 20 passed, 0 failed (20 total)
 ======================================================
-ALL 19 TEST SUITES PASSED FLAWLESSLY!
+ALL 20 TEST SUITES PASSED FLAWLESSLY!
 ```
 
 ---

@@ -34,6 +34,8 @@ ${bold}PROJECT SCAFFOLDING RECIPES (7 FRAMEWORKS / 13 OPTIONS):${reset}
     ${green}setup django <folder>${reset}          Standalone Django backend with SQLite
 
 ${bold}AI CODE GENERATION & ASSISTANCE (GEMINI FREE TIER):${reset}
+  ${magenta}explain [file|folder]${reset}         Explain codebase architecture or file role
+                                (e.g. "explain src/repl.js" or "explain .")
   ${magenta}tell <instruction>${reset}            Instruct AI to generate files & code with preview & (Y/N) confirmation
                                 (e.g. "tell create 2 cpp files named m1 m2")
   ${magenta}suggest <description>${reset}         AI recommends stack + asks (Y/N) to automatically scaffold

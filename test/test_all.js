@@ -20,7 +20,8 @@ const testScripts = [
   'test/test_tell.js',
   'test/test_venv_prompt.js',
   'test/test_key_command.js',
-  'test/test_prereqs_and_lts.js'
+  'test/test_prereqs_and_lts.js',
+  'test/test_explain.js'
 ];
 
 console.log('\n======================================================');

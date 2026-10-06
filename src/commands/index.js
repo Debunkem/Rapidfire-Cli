@@ -6,6 +6,7 @@ const { handleSuggest } = require('./suggest');
 const { handleDeploy } = require('./deploy');
 const { handleTell } = require('./tell');
 const { handleKey } = require('./key');
+const { handleExplain } = require('./explain');
 
 /**
  * Parses user input line and checks if it matches a rapidfire internal command.
@@ -95,6 +96,13 @@ function matchCommand(line) {
     return {
       name: 'key',
       run: async () => handleKey(tokens.slice(1))
+    };
+  }
+
+  if (cmd === 'explain') {
+    return {
+      name: 'explain',
+      run: async () => handleExplain(tokens.slice(1))
     };
   }
 
