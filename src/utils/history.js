@@ -30,9 +30,69 @@ function getHostHistoryPaths() {
 }
 
 /**
+ * Resolves the primary active host shell history file based on active shell and mtime
+ */
+function getActiveHostHistoryPath() {
+  const home = os.homedir();
+  const isWindows = process.platform === 'win32';
+  const isPwsh = Boolean(
+    isWindows ||
+    process.env.PSModulePath ||
+    process.env.POWERSHELL_DISTRIBUTION_CHANNEL ||
+    (process.env.SHELL && (process.env.SHELL.includes('pwsh') || process.env.SHELL.includes('powershell')))
+  );
+
+  if (isPwsh) {
+    if (isWindows) {
+      const appData = process.env.APPDATA || path.join(home, 'AppData', 'Roaming');
+      const pwshPath = path.join(appData, 'Microsoft', 'Windows', 'PowerShell', 'PSReadLine', 'ConsoleHost_history.txt');
+      if (fs.existsSync(pwshPath)) return pwshPath;
+    } else {
+      const pwshPath = path.join(home, '.local', 'share', 'powershell', 'PSReadLine', 'ConsoleHost_history.txt');
+      if (fs.existsSync(pwshPath)) return pwshPath;
+    }
+  }
+
+  const userShell = process.env.SHELL || '';
+  if (userShell.includes('zsh')) {
+    const zshPath = path.join(home, '.zsh_history');
+    if (fs.existsSync(zshPath)) return zshPath;
+  }
+
+  if (userShell.includes('bash')) {
+    const bashPath = path.join(home, '.bash_history');
+    if (fs.existsSync(bashPath)) return bashPath;
+  }
+
+  // Fallback: prioritize the candidate that exists and was most recently modified
+  const candidates = [
+    path.join(home, '.local', 'share', 'powershell', 'PSReadLine', 'ConsoleHost_history.txt'),
+    path.join(home, '.bash_history'),
+    path.join(home, '.zsh_history')
+  ];
+  let best = null;
+  let bestMtime = 0;
+  for (const c of candidates) {
+    try {
+      if (fs.existsSync(c)) {
+        const stat = fs.statSync(c);
+        if (stat.mtimeMs > bestMtime) {
+          bestMtime = stat.mtimeMs;
+          best = c;
+        }
+      }
+    } catch {}
+  }
+  return best;
+}
+
+/**
  * Finds the primary active host history file that exists on disk
  */
 function getPrimaryHostHistoryPath() {
+  const active = getActiveHostHistoryPath();
+  if (active) return active;
+
   const paths = getHostHistoryPaths();
   for (const p of paths) {
     if (fs.existsSync(p)) {
@@ -41,15 +101,16 @@ function getPrimaryHostHistoryPath() {
   }
   // Fallback to RapidFire default history path
   const home = os.homedir();
-  return path.join(home, '.rapidfire', 'history.txt');
+  const rfDir = getRapidfireDir ? getRapidfireDir() : path.join(home, '.rapidfire');
+  return path.join(rfDir, 'history.txt');
 }
 
 /**
- * Sanitizes command lines, filtering out binary/corrupt lines and empty spaces
+ * Sanitizes command lines, filtering out binary/corrupt lines, internal markers, and empty spaces
  */
 function sanitizeCommandLine(raw) {
   if (!raw || typeof raw !== 'string') return null;
-  const line = raw.trim();
+  let line = raw.trim();
   if (!line) return null;
 
   // Filter lines containing non-printable binary control characters
@@ -57,10 +118,15 @@ function sanitizeCommandLine(raw) {
     return null;
   }
 
+  // Filter out internal sentinel markers, test artifacts, or rapidfire internal markers
+  if (line.includes('__RF_DONE__') || line.includes('__RF_') || line.includes('__rapidfire_')) {
+    return null;
+  }
+
   // Filter Zsh timestamp prefix (: 1620000000:0;command)
   const zshMatch = line.match(/^:\s*\d+:\d+;(.*)$/);
   if (zshMatch) {
-    return zshMatch[1].trim();
+    line = zshMatch[1].trim();
   }
 
   return line;
@@ -72,12 +138,32 @@ function sanitizeCommandLine(raw) {
  */
 function loadHistory(limit = 100) {
   const historyLines = [];
-  const visited = new Set();
-  const paths = getHostHistoryPaths();
+  const home = os.homedir();
+  const rfDir = getRapidfireDir ? getRapidfireDir() : path.join(home, '.rapidfire');
+  const rfPath = path.join(rfDir, 'history.txt');
 
-  for (const filePath of paths) {
-    if (!fs.existsSync(filePath)) continue;
+  // Load order: RapidFire persistent history first, then active host shell history second
+  // This ensures host commands executed immediately before starting RapidFire (e.g. git add .) are newest
+  const pathsToLoad = [];
+  if (fs.existsSync(rfPath)) {
+    pathsToLoad.push(rfPath);
+  }
 
+  const hostPath = getActiveHostHistoryPath();
+  if (hostPath && hostPath !== rfPath && fs.existsSync(hostPath)) {
+    pathsToLoad.push(hostPath);
+  } else if (!pathsToLoad.length) {
+    // If neither found, scan candidate list
+    const candidates = getHostHistoryPaths();
+    for (const p of candidates) {
+      if (fs.existsSync(p)) {
+        pathsToLoad.push(p);
+        break;
+      }
+    }
+  }
+
+  for (const filePath of pathsToLoad) {
     try {
       const content = fs.readFileSync(filePath, 'utf8');
       const rawLines = content.split(/\r?\n/);
@@ -164,6 +250,7 @@ function saveSessionHistory(sessionCommands) {
 
 module.exports = {
   getHostHistoryPaths,
+  getActiveHostHistoryPath,
   getPrimaryHostHistoryPath,
   sanitizeCommandLine,
   loadHistory,

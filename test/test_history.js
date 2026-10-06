@@ -29,6 +29,8 @@ function runTests() {
   assert.strictEqual(sanitizeCommandLine(null), null, 'Null input should be null');
   // Binary corrupt line
   assert.strictEqual(sanitizeCommandLine('\x00\x01corrupt\x02\x03'), null, 'Binary characters must be rejected');
+  // Internal sentinel filter
+  assert.strictEqual(sanitizeCommandLine('git status; echo "__RF_DONE__0"'), null, '__RF_DONE__ sentinels must be rejected');
   // Zsh timestamp line
   assert.strictEqual(sanitizeCommandLine(': 1620000000:0;npm run dev'), 'npm run dev', 'Zsh timestamps should be stripped');
   console.log('✓ Command line sanitization verified.');

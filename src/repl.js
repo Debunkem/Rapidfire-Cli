@@ -3,7 +3,7 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 const { PersistentShell } = require('./shell');
-const { matchCommand } = require('./commands');
+const { matchCommand, getKeywordSuggestion } = require('./commands');
 const { highlightSyntax, createCompleter } = require('./utils/highlighter');
 const { loadHistory, saveSessionHistory } = require('./utils/history');
 
@@ -86,38 +86,40 @@ class RapidfireRepl {
     // Pipe PTY output only when a pass-through command is running
     // This prevents bash startup prompt ([user@host cwd]$) from bleeding into initial screen
     this.shell.onData((data) => {
+      let chunk = data;
+
+      // Clean internal PowerShell / subshell prompt strings so they don't collide with rapidfire prompt
+      if (chunk) {
+        chunk = chunk.replace(/PS\s+[^\r\n>]+>\s*/g, '');
+      }
+
+      // Strip the terminal driver's echo of the command typed by the user
+      if (this.expectedEcho && chunk) {
+        const trimmedEcho = this.expectedEcho.trim();
+        const escaped = trimmedEcho.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        // Only strip if the chunk starts with the exact command line and newline or terminal escape sequence
+        // DO NOT strip if the chunk contains error text like "hi: The term 'hi' is not recognized"
+        const echoRegex = new RegExp('^\\s*' + escaped + '\\s*(\\r?\\n|\u001b\\[[0-9;]*[a-zA-Z]|$)', 'g');
+        if (echoRegex.test(chunk)) {
+          chunk = chunk.replace(echoRegex, '');
+          this.expectedEcho = null;
+        } else if (chunk.trim() === trimmedEcho) {
+          chunk = '';
+          this.expectedEcho = null;
+        }
+      }
+
+      if (chunk) {
+        process.stdout.write(chunk);
+      }
+
       if (this.isPassthroughRunning) {
-        let chunk = data;
-
-        // Clean internal PowerShell / subshell prompt strings so they don't collide with rapidfire prompt
-        if (chunk) {
-          chunk = chunk.replace(/PS\s+[^\r\n>]+>\s*/g, '');
-        }
-
-        // Strip the terminal driver's echo of the command typed by the user
-        if (this.expectedEcho && chunk) {
-          const trimmedEcho = this.expectedEcho.trim();
-          const escaped = trimmedEcho.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-          const regex = new RegExp('^\\s*' + escaped + '(\\r?\\n)?');
-          if (regex.test(chunk)) {
-            chunk = chunk.replace(regex, '');
-            this.expectedEcho = null;
-          } else if (chunk.trim() === trimmedEcho) {
-            chunk = '';
-            this.expectedEcho = null;
-          }
-        }
-
-        if (chunk) {
-          process.stdout.write(chunk);
-        }
-
         if (this.idleTimer) clearTimeout(this.idleTimer);
         this.idleTimer = setTimeout(() => {
           this.isPassthroughRunning = false;
           this.expectedEcho = null;
           this.prompt();
-        }, 120);
+        }, 150);
       }
     });
 
@@ -182,6 +184,14 @@ ${dim}Type 'help' for built-in recipes, or run any standard shell command.${rese
       return;
     }
 
+    // Keyword typo suggestion helper
+    const firstWord = line.split(/\s+/)[0];
+    const suggestion = getKeywordSuggestion(firstWord);
+    if (suggestion) {
+      console.log(`\x1b[33m[rapidfire] '${firstWord}' is not a recognized command. Did you mean '${suggestion}'?\x1b[0m`);
+      console.log(`Type \x1b[36mhelp\x1b[0m to view all available commands.\n`);
+    }
+
     // Handle cd synchronization between Node process.cwd() and shell PTY
     this.handleCdSync(line);
 
@@ -195,9 +205,10 @@ ${dim}Type 'help' for built-in recipes, or run any standard shell command.${rese
     this.idleTimer = setTimeout(() => {
       if (this.isPassthroughRunning) {
         this.isPassthroughRunning = false;
+        this.expectedEcho = null;
         this.prompt();
       }
-    }, 450);
+    }, 1500);
   }
 
   handleCdSync(line) {

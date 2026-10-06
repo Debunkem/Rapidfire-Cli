@@ -14,6 +14,36 @@ RapidFire is an interactive terminal overlay and persistent developer workspace 
 
 ---
 
+## Table of Contents
+
+- [Architecture & Value Proposition](#architecture--value-proposition)
+- [Cost & Local Execution FAQ](#cost--local-execution-faq)
+  - [Is RapidFire a cloud service? Does it cost money?](#is-rapidfire-a-cloud-service-does-it-cost-money)
+- [Installation Guide](#installation-guide)
+  - [Global Installation](#installation-guide)
+  - [Local Developer Clone](#local-developer-clone)
+- [Complete Uninstallation & Deletion Guide](#complete-uninstallation--deletion-guide)
+  - [Step 1: Remove the Global Package](#step-1-remove-the-global-package)
+  - [Step 2: Delete Configuration, Keys & Saved Presets](#step-2-delete-configuration-keys--saved-presets)
+- [Interactive In-Terminal Package Installer](#interactive-in-terminal-package-installer)
+  - [Why this is safer than manual terminal installation](#why-this-is-safer-than-manual-terminal-installation)
+- [Enterprise-Grade Security Guardrails](#enterprise-grade-security-guardrails)
+  - [1. GitLeaks Pre-Push Secret Scanning](#1-gitleaks-pre-push-secret-scanning)
+  - [2. Dependency Injection & Typo-Squatting Defense](#2-dependency-injection--typo-squatting-defense)
+  - [3. Safe Generative Code Writing (tell)](#3-safe-generative-code-writing-tell)
+  - [4. Guarded Production Deployments (deploy)](#4-guarded-production-deployments-deploy)
+  - [5. Local Credential Privacy](#5-local-credential-privacy)
+- [Scaffolding Recipes & LTS Stack](#scaffolding-recipes--lts-stack)
+  - [Full-Stack Connected Recipes](#full-stack-connected-recipes)
+  - [Standalone Frontend & Backend Recipes](#standalone-frontend--backend-recipes)
+  - [Proactive Runtime Pre-Flight Checks](#proactive-runtime-pre-flight-checks)
+- [Gemini API Key Management](#gemini-api-key-management)
+- [Command Reference](#command-reference)
+- [Testing & Verification](#testing--verification)
+- [License](#license)
+
+---
+
 ## Architecture & Value Proposition
 
 RapidFire runs directly on your local computer as a persistent PTY terminal overlay. Any standard terminal command (`ls`, `git`, `cd`, `npm`, `python`, `docker`) runs seamlessly through your native shell while preserving working directory state and environment variables.
