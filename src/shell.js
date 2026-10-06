@@ -13,6 +13,9 @@ try {
 class ChildProcessPtyAdapter {
   constructor(proc) {
     this.proc = proc;
+    if (this.proc) {
+      this.proc.on('error', () => {});
+    }
   }
   write(data) {
     if (this.proc && this.proc.stdin && !this.proc.stdin.destroyed) {
@@ -98,7 +101,10 @@ class PersistentShell {
     const cols = process.stdout.columns || 80;
     const rows = process.stdout.rows || 24;
 
-    if (pty) {
+    const isPowerShell = this.shellName.includes('pwsh') || this.shellName.includes('powershell');
+    this.isPowerShell = isPowerShell;
+
+    if (pty && !isPowerShell) {
       try {
         this.ptyProcess = pty.spawn(shell, args, {
           name: 'xterm-256color',
@@ -111,25 +117,14 @@ class PersistentShell {
           }
         });
       } catch {
-        // Fallback to /bin/sh or child_process
-        try {
-          this.ptyProcess = pty.spawn('/bin/sh', [], {
-            name: 'xterm-256color',
-            cols,
-            rows,
-            cwd: process.cwd(),
-            env: process.env
-          });
-          this.shellName = 'sh';
-        } catch {
-          this.ptyProcess = null;
-        }
+        this.ptyProcess = null;
       }
     }
 
     if (!this.ptyProcess) {
-      // Robust standard spawn fallback for environments without native PTY binaries
-      const cpProc = spawn(shell, args, {
+      // Robust standard spawn fallback for environments without native PTY binaries or PowerShell
+      const finalArgs = isPowerShell ? ['-NoLogo', '-NoProfile'] : args;
+      const cpProc = spawn(shell, finalArgs, {
         cwd: process.cwd(),
         env: process.env,
         stdio: ['pipe', 'pipe', 'pipe']
@@ -138,10 +133,6 @@ class PersistentShell {
     }
 
     this.ptyProcess.onData((data) => {
-      // If shell queries cursor position report (\u001b[6n) e.g. PowerShell PSReadLine, answer CPR immediately
-      if (typeof data === 'string' && data.includes('\u001b[6n')) {
-        this.ptyProcess.write('\u001b[1;1R');
-      }
       for (const listener of this.dataListeners) {
         listener(data);
       }
@@ -169,7 +160,8 @@ class PersistentShell {
 
   write(input) {
     if (this.ptyProcess) {
-      this.ptyProcess.write(input + '\n');
+      const eol = this.isPowerShell ? '\r\n' : '\n';
+      this.ptyProcess.write(input + eol);
     }
   }
 

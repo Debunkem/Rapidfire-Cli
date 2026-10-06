@@ -55,6 +55,11 @@ class RapidfireRepl {
           }
         }
 
+        // Clean internal PowerShell prompt strings so they don't collide with rapidfire prompt
+        if (this.shell.isPowerShell && chunk) {
+          chunk = chunk.replace(/PS\s+[^\r\n>]+>\s*/g, '');
+        }
+
         if (chunk) {
           process.stdout.write(chunk);
         }
@@ -64,7 +69,7 @@ class RapidfireRepl {
           this.isPassthroughRunning = false;
           this.expectedEcho = null;
           this.prompt();
-        }, 350);
+        }, 120);
       }
     });
 
@@ -134,14 +139,14 @@ ${dim}Type 'help' for built-in recipes, or run any standard shell command.${rese
     this.expectedEcho = line;
     this.shell.write(line);
 
-    // Safety fallback timer if the command produces no stdout
+    // Safety fallback timer if the command produces no stdout (e.g. git add .)
     if (this.idleTimer) clearTimeout(this.idleTimer);
     this.idleTimer = setTimeout(() => {
       if (this.isPassthroughRunning) {
         this.isPassthroughRunning = false;
         this.prompt();
       }
-    }, 1200);
+    }, 450);
   }
 
   handleCdSync(line) {
