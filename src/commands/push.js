@@ -52,20 +52,43 @@ function parsePushArgs(input) {
 
   // Post-push tokens
   const postPush = tokens.slice(pushIdx + 1);
+  // Check if an explicit commit flag exists in postPush (-commit, --commit, -message, --message)
+  const hasExplicitCommitFlag = postPush.some((t) => {
+    const l = t.toLowerCase();
+    return (
+      l === '-commit' ||
+      l === '--commit' ||
+      l === '-message' ||
+      l === '--message' ||
+      l.startsWith('-commit=') ||
+      l.startsWith('--commit=') ||
+      l.startsWith('-message=') ||
+      l.startsWith('--message=')
+    );
+  });
+
   let i = 0;
   while (i < postPush.length) {
     const token = postPush[i];
     const lower = token.toLowerCase();
 
-    // Branch flag: -b, -branch, --branch, -branchname, --branchname
-    if (lower === '-b' || lower === '-branch' || lower === '--branch' || lower === '-branchname' || lower === '--branchname') {
+    // Branch flag: -b, -branch, --branch, -brach, -branchname, --branchname
+    if (lower === '-b' || lower === '-branch' || lower === '--branch' || lower === '-brach' || lower === '-branchname' || lower === '--branchname') {
       if (i + 1 < postPush.length && !postPush[i + 1].startsWith('-')) {
         branch = postPush[i + 1];
         i += 2;
         continue;
       }
-    } else if (lower.startsWith('-b=') || lower.startsWith('-branch=') || lower.startsWith('--branch=')) {
+    } else if (lower.startsWith('-b=') || lower.startsWith('-branch=') || lower.startsWith('-brach=') || lower.startsWith('--branch=')) {
       branch = token.split('=')[1];
+      i++;
+      continue;
+    } else if (lower === '-main' || lower === '--main') {
+      branch = 'main';
+      i++;
+      continue;
+    } else if (lower === '-master' || lower === '--master') {
+      branch = 'master';
       i++;
       continue;
     } else if (token.startsWith('-') && i + 1 < postPush.length && postPush[i + 1].toLowerCase() === 'branch') {
@@ -73,29 +96,58 @@ function parsePushArgs(input) {
       branch = token.replace(/^-+/, '');
       i += 2;
       continue;
+    } else if (lower.startsWith('-branch') || lower.startsWith('-brach')) {
+      // Handles attached branch names like -branch1, -brach1, -branch-dev
+      let raw = token.replace(/^-+/, '');
+      if (raw.toLowerCase().startsWith('brach')) {
+        raw = raw.replace(/^brach/i, 'branch');
+      }
+      branch = raw;
+      i++;
+      continue;
+    } else if (lower === '-m') {
+      // When -commit is also present, -m is interpreted as targeting branch 'main'
+      if (hasExplicitCommitFlag) {
+        branch = 'main';
+        i++;
+        continue;
+      } else if (i + 1 < postPush.length && !postPush[i + 1].startsWith('-')) {
+        // Standard git syntax: push -m "commit message"
+        message = postPush[i + 1];
+        i += 2;
+        continue;
+      } else {
+        // Standalone -m (e.g. push -m or push -m -b feature): targets branch 'main'
+        branch = 'main';
+        i++;
+        continue;
+      }
     }
 
     // Commit message flags:
-    // Can be: -m, -commit, --commit, or compound like: -m -commit, -commit -m
-    if (lower === '-m' || lower === '-commit' || lower === '--commit') {
-      // Check for compound flag: e.g. -m -commit "msg"
-      if (i + 1 < postPush.length) {
-        const nextLower = postPush[i + 1].toLowerCase();
-        if (nextLower === '-commit' || nextLower === '-m' || nextLower === '--commit') {
-          // Compound flag: value is at i + 2
-          if (i + 2 < postPush.length) {
-            message = postPush[i + 2];
-            i += 3;
-            continue;
-          }
-        } else if (!postPush[i + 1].startsWith('-')) {
-          message = postPush[i + 1];
-          i += 2;
-          continue;
-        }
+    // Can be: -commit, --commit, -message, --message
+    if (lower === '-commit' || lower === '--commit' || lower === '-message' || lower === '--message') {
+      if (i + 1 < postPush.length && !postPush[i + 1].startsWith('-')) {
+        message = postPush[i + 1];
+        i += 2;
+        continue;
       }
-    } else if (lower.startsWith('-m=') || lower.startsWith('-commit=') || lower.startsWith('--commit=')) {
+    } else if (
+      lower.startsWith('-commit=') ||
+      lower.startsWith('--commit=') ||
+      lower.startsWith('-message=') ||
+      lower.startsWith('--message=')
+    ) {
       message = token.split('=')[1];
+      i++;
+      continue;
+    } else if (lower.startsWith('-m=')) {
+      const val = token.split('=')[1];
+      if (hasExplicitCommitFlag || val.toLowerCase() === 'main') {
+        branch = 'main';
+      } else {
+        message = val;
+      }
       i++;
       continue;
     }
@@ -168,7 +220,28 @@ async function handlePush(rawArgs, context = {}) {
 
     try {
       if (branchExists) {
-        run(`git checkout "${parsed.branch}"`, { cwd, stdio: 'ignore' });
+        try {
+          run(`git checkout "${parsed.branch}"`, { cwd, stdio: 'ignore' });
+        } catch {
+          // If checkout failed due to uncommitted working tree changes, safely stash, switch, and pop
+          let stashed = false;
+          try {
+            const stashRes = runCapture('git stash create', { cwd }).trim();
+            if (stashRes) {
+              run('git stash push -u -m "rapidfire-switch"', { cwd, stdio: 'ignore' });
+              stashed = true;
+            }
+            run(`git checkout "${parsed.branch}"`, { cwd, stdio: 'ignore' });
+            if (stashed) {
+              run('git stash pop', { cwd, stdio: 'ignore' });
+            }
+          } catch (stErr) {
+            if (stashed) {
+              try { run('git stash pop', { cwd, stdio: 'ignore' }); } catch {}
+            }
+            throw stErr;
+          }
+        }
       } else {
         run(`git checkout -b "${parsed.branch}"`, { cwd, stdio: 'ignore' });
       }
