@@ -4,6 +4,7 @@ const os = require('os');
 const fs = require('fs');
 const { PersistentShell } = require('./shell');
 const { matchCommand } = require('./commands');
+const { highlightSyntax, createCompleter } = require('./utils/highlighter');
 
 class RapidfireRepl {
   constructor() {
@@ -33,8 +34,22 @@ class RapidfireRepl {
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
-      prompt: this.getPrompt()
+      prompt: this.getPrompt(),
+      completer: createCompleter()
     });
+
+    // Real-time syntax highlighting hook on readline output
+    if (typeof this.rl._writeToOutput === 'function') {
+      const origWrite = this.rl._writeToOutput.bind(this.rl);
+      this.rl._writeToOutput = function(stringToWrite) {
+        if (typeof stringToWrite === 'string' && this._prompt && stringToWrite.startsWith(this._prompt)) {
+          const rawLine = stringToWrite.slice(this._prompt.length);
+          const highlighted = highlightSyntax(rawLine);
+          return origWrite(this._prompt + highlighted);
+        }
+        return origWrite(stringToWrite);
+      };
+    }
 
     this.expectedEcho = null;
 

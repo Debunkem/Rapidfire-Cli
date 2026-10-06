@@ -73,7 +73,7 @@ If you are developing or contributing to the RapidFire codebase:
 git clone https://github.com/Debunkem/rapidfire-cli.git
 cd miniproject
 npm install
-npm test      # Runs all 19 automated test suites
+npm test      # Runs all 21 automated test suites
 npm start     # Starts local REPL
 ```
 
@@ -273,9 +273,9 @@ npm test
 
 ```text
 ======================================================
-Summary: 20 passed, 0 failed (20 total)
+Summary: 21 passed, 0 failed (21 total)
 ======================================================
-ALL 20 TEST SUITES PASSED FLAWLESSLY!
+ALL 21 TEST SUITES PASSED FLAWLESSLY!
 ```
 
 ---
