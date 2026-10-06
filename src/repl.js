@@ -135,13 +135,13 @@ class RapidfireRepl {
         this.expectedEcho = null;
         this.prompt();
       } else if (this.isPassthroughRunning) {
-        // Fallback debounce for streaming commands that don't emit sentinel
+        // Refresh safety hang guard timer while data is streaming
         if (this.idleTimer) clearTimeout(this.idleTimer);
         this.idleTimer = setTimeout(() => {
           this.isPassthroughRunning = false;
           this.expectedEcho = null;
           this.prompt();
-        }, 300);
+        }, 30000);
       }
     });
 
@@ -237,14 +237,14 @@ ${dim}Type 'help' for built-in recipes, or run any standard shell command.${rese
     // Send command with completion sentinel so REPL detects exactly when it finishes
     this.shell.write(`${line}; echo "${RAPIDFIRE_DONE_SENTINEL}"`);
 
-    // Safety fallback timer (20 seconds) in case an external command hangs without sentinel
+    // Safety hang guard timer (30 seconds) in case an external command hangs without sentinel
     this.idleTimer = setTimeout(() => {
       if (this.isPassthroughRunning) {
         this.isPassthroughRunning = false;
         this.expectedEcho = null;
         this.prompt();
       }
-    }, 20000);
+    }, 30000);
   }
 
   handleCdSync(line) {

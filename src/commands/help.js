@@ -57,9 +57,9 @@ ${bold}PROJECT PRESETS & REPRODUCIBILITY:${reset}
   ${yellow}presets${reset} / ${yellow}list presets${reset}          List all saved project presets
 
 ${bold}GIT & GITHUB AUTOMATION:${reset}
-  ${green}git add <files> push [-branch <branch>] -commit "msg"${reset}
-                                Stage files (or .), commit, and push in one unified command
-                                (e.g. "git add . push -branch main -commit 'Add server module'")
+  ${green}git add <files> push [-b <branchname>] -commit "msg"${reset}
+                                Stage files (or .), commit, and push (creates branch if new)
+                                (e.g. "git add . push -b branch1 -commit 'test features'")
                                 (e.g. "git add README.md push -commit 'updated'")
 
 ${bold}PRODUCTION DEPLOYMENT:${reset}

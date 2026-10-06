@@ -53,6 +53,24 @@ async function runTests() {
   assert.strictEqual(promptCount, 4, 'Prompt must fire automatically when long command finishes');
   assert.strictEqual(repl.isPassthroughRunning, false, 'isPassthroughRunning must be reset to false');
 
+  // Test 5: Multi-stage command with mid-stream pause (e.g. npm publish simulation)
+  console.log('[Test 5] Testing command with mid-stream pause to verify NO mid-stream prompt...');
+  const multiPhaseCmd = isWin
+    ? 'pwsh -NoLogo -NoProfile -Command "Write-Host \'Phase 1\'; Start-Sleep -Milliseconds 600; Write-Host \'Phase 2\'"'
+    : 'sh -c "echo Phase 1; sleep 0.6; echo Phase 2"';
+
+  await repl.handleLine(multiPhaseCmd);
+
+  // At 350ms, Phase 1 has printed and command is paused in sleep
+  await new Promise((r) => setTimeout(r, 350));
+  assert.strictEqual(promptCount, 4, 'Prompt must NOT appear mid-stream during output pause');
+  assert.strictEqual(repl.isPassthroughRunning, true, 'Passthrough must remain active across pauses');
+
+  // At 1000ms, Phase 2 has printed and sentinel has arrived
+  await new Promise((r) => setTimeout(r, 700));
+  assert.strictEqual(promptCount, 5, 'Prompt must fire exactly once at the end of the entire command');
+  assert.strictEqual(repl.isPassthroughRunning, false, 'Passthrough must finish cleanly');
+
   console.log('✓ All REPL prompt return test scenarios verified successfully!');
 
   repl.shutdown();

@@ -57,14 +57,14 @@ function parsePushArgs(input) {
     const token = postPush[i];
     const lower = token.toLowerCase();
 
-    // Branch flag: -b, -branch, --branch, -branchname, --branchname
-    if (lower === '-b' || lower === '-branch' || lower === '--branch' || lower === '-branchname' || lower === '--branchname') {
+    // Branch flag: -b <name>, -branch <name>, -brach <name>, attached -branch1/-brach1
+    if (lower === '-b' || lower === '-branch' || lower === '--branch' || lower === '-brach' || lower === '-branchname' || lower === '--branchname') {
       if (i + 1 < postPush.length && !postPush[i + 1].startsWith('-')) {
         branch = postPush[i + 1];
         i += 2;
         continue;
       }
-    } else if (lower.startsWith('-b=') || lower.startsWith('-branch=') || lower.startsWith('--branch=')) {
+    } else if (lower.startsWith('-b=') || lower.startsWith('-branch=') || lower.startsWith('-brach=') || lower.startsWith('--branch=')) {
       branch = token.split('=')[1];
       i++;
       continue;
@@ -72,6 +72,15 @@ function parsePushArgs(input) {
       // Handles e.g. -2nd branch or -main branch
       branch = token.replace(/^-+/, '');
       i += 2;
+      continue;
+    } else if (lower.startsWith('-branch') || lower.startsWith('-brach')) {
+      // Handles attached branch names like -branch1, -brach1, -branch-dev
+      let raw = token.replace(/^-+/, '');
+      if (raw.toLowerCase().startsWith('brach')) {
+        raw = raw.replace(/^brach/i, 'branch');
+      }
+      branch = raw;
+      i++;
       continue;
     }
 
@@ -169,10 +178,11 @@ async function handlePush(rawArgs, context = {}) {
     try {
       if (branchExists) {
         run(`git checkout "${parsed.branch}"`, { cwd, stdio: 'ignore' });
+        console.log(`${cyan}[rapidfire-git] Switched to existing branch:${reset} ${targetBranch}`);
       } else {
         run(`git checkout -b "${parsed.branch}"`, { cwd, stdio: 'ignore' });
+        console.log(`${green}✔ [rapidfire-git] Created and switched to new branch:${reset} ${targetBranch}`);
       }
-      console.log(`${cyan}[rapidfire-git] Switched to branch:${reset} ${targetBranch}`);
     } catch (checkoutErr) {
       console.error(`${red}[rapidfire-git] Failed to switch branch:${reset} ${checkoutErr.message}`);
     }

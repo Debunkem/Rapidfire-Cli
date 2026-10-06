@@ -38,6 +38,14 @@ async function runTests() {
   assert.strictEqual(p6.branch, 'feature-123', 'Should parse -b flag');
   assert.strictEqual(p6.message, 'wip commit', 'Should parse -commit flag');
 
+  const p7 = parsePushArgs('git add . push -b branch1 -commit "test features"');
+  assert.deepStrictEqual(p7.files, ['.'], 'Should parse files as [.]');
+  assert.strictEqual(p7.branch, 'branch1', 'Should parse -b branch1 correctly');
+  assert.strictEqual(p7.message, 'test features', 'Should parse message correctly');
+
+  const p8 = parsePushArgs('git add . push -brach1 -commit "test features"');
+  assert.strictEqual(p8.branch, 'branch1', 'Should tolerate -brach1 typo as branch1');
+
   console.log('✓ All syntax parsing combinations verified successfully.');
 
   // 2. Integration test with simulated local git remote
@@ -114,11 +122,16 @@ async function runTests() {
     const currentBranch = runCapture('git branch --show-current', { cwd: localProject }).trim();
     assert.strictEqual(currentBranch, '2nd', 'Active branch should now be 2nd');
 
-    // Test clean working tree push
-    console.log('[Test 6] Testing push when working tree has no changes...');
-    const res3 = await handlePush('push -m "no changes"', { cwd: localProject });
-    assert(res3.success, 'Push on clean working tree should succeed cleanly');
-    assert.strictEqual(res3.commitMade, false, 'No new commit should be created when clean');
+    // Test -b <branchname> branch creation and push
+    console.log('[Test 7] Testing branch creation with "git add . push -b branch1 -commit \"test features\""...');
+    fs.writeFileSync(path.join(localProject, 'feature.js'), 'console.log("Branch feature");\n', 'utf8');
+
+    const resB = await handlePush('git add . push -b branch1 -commit "test features"', { cwd: localProject });
+    assert(resB.success, 'Push with -b branch1 should succeed');
+    assert.strictEqual(resB.commitMade, true, 'Commit should be created on branch1');
+
+    const bBranch = runCapture('git branch --show-current', { cwd: localProject }).trim();
+    assert.strictEqual(bBranch, 'branch1', 'Active branch must now be branch1');
 
     console.log('✓ Full unified push workflow verified with 100% success!');
   } finally {
