@@ -24,7 +24,8 @@ const testScripts = [
   'test/test_explain.js',
   'test/test_highlighter.js',
   'test/test_history.js',
-  'test/test_push_command.js'
+  'test/test_push_command.js',
+  'test/test_repl_prompt.js'
 ];
 
 console.log('\n======================================================');

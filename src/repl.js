@@ -7,6 +7,8 @@ const { matchCommand, getKeywordSuggestion } = require('./commands');
 const { highlightSyntax, createCompleter } = require('./utils/highlighter');
 const { loadHistory, saveSessionHistory } = require('./utils/history');
 
+const RAPIDFIRE_DONE_SENTINEL = '__RAPIDFIRE_DONE__';
+
 class RapidfireRepl {
   constructor() {
     this.shell = new PersistentShell();
@@ -91,6 +93,19 @@ class RapidfireRepl {
       // Clean internal PowerShell / subshell prompt strings so they don't collide with rapidfire prompt
       if (chunk) {
         chunk = chunk.replace(/PS\s+[^\r\n>]+>\s*/g, '');
+        chunk = chunk.replace(/\[[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9_\-\.]+\s+[^\]]+\][\$#]\s*/g, '');
+      }
+
+      // Strip appended sentinel from echoed command lines so user never sees internal plumbing
+      if (chunk) {
+        chunk = chunk.replace(/;\s*echo\s+["']?__RAPIDFIRE_DONE__["']?/g, '');
+      }
+
+      // Check if chunk contains the completion sentinel
+      let hasSentinel = false;
+      if (chunk && chunk.includes(RAPIDFIRE_DONE_SENTINEL)) {
+        hasSentinel = true;
+        chunk = chunk.replace(new RegExp(RAPIDFIRE_DONE_SENTINEL + '(\\r?\\n|\\s)*', 'g'), '');
       }
 
       // Strip the terminal driver's echo of the command typed by the user
@@ -113,13 +128,20 @@ class RapidfireRepl {
         process.stdout.write(chunk);
       }
 
-      if (this.isPassthroughRunning) {
+      if (hasSentinel) {
+        // Underlying command has completely finished
+        if (this.idleTimer) clearTimeout(this.idleTimer);
+        this.isPassthroughRunning = false;
+        this.expectedEcho = null;
+        this.prompt();
+      } else if (this.isPassthroughRunning) {
+        // Fallback debounce for streaming commands that don't emit sentinel
         if (this.idleTimer) clearTimeout(this.idleTimer);
         this.idleTimer = setTimeout(() => {
           this.isPassthroughRunning = false;
           this.expectedEcho = null;
           this.prompt();
-        }, 150);
+        }, 300);
       }
     });
 
@@ -130,6 +152,18 @@ class RapidfireRepl {
 
     this.rl.on('line', async (rawLine) => {
       await this.handleLine(rawLine);
+    });
+
+    this.rl.on('SIGINT', () => {
+      if (this.isPassthroughRunning) {
+        this.shell.write('\x03');
+        this.isPassthroughRunning = false;
+        this.expectedEcho = null;
+        if (this.idleTimer) clearTimeout(this.idleTimer);
+        this.prompt();
+      } else {
+        this.shutdown();
+      }
     });
 
     this.rl.on('close', () => {
@@ -198,17 +232,19 @@ ${dim}Type 'help' for built-in recipes, or run any standard shell command.${rese
     // Pass-through to underlying persistent shell
     this.isPassthroughRunning = true;
     this.expectedEcho = line;
-    this.shell.write(line);
-
-    // Safety fallback timer if the command produces no stdout (e.g. git add .)
     if (this.idleTimer) clearTimeout(this.idleTimer);
+
+    // Send command with completion sentinel so REPL detects exactly when it finishes
+    this.shell.write(`${line}; echo "${RAPIDFIRE_DONE_SENTINEL}"`);
+
+    // Safety fallback timer (20 seconds) in case an external command hangs without sentinel
     this.idleTimer = setTimeout(() => {
       if (this.isPassthroughRunning) {
         this.isPassthroughRunning = false;
         this.expectedEcho = null;
         this.prompt();
       }
-    }, 1500);
+    }, 20000);
   }
 
   handleCdSync(line) {

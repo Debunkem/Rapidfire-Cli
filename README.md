@@ -16,33 +16,21 @@ RapidFire is an interactive terminal overlay and persistent developer workspace 
 
 ## Table of Contents
 
-- [Architecture & Value Proposition](#architecture--value-proposition)
-- [Cost & Local Execution FAQ](#cost--local-execution-faq)
-  - [Is RapidFire a cloud service? Does it cost money?](#is-rapidfire-a-cloud-service-does-it-cost-money)
-- [Installation Guide](#installation-guide)
-  - [Global Installation](#installation-guide)
-  - [Local Developer Clone](#local-developer-clone)
-- [Complete Uninstallation & Deletion Guide](#complete-uninstallation--deletion-guide)
-  - [Step 1: Remove the Global Package](#step-1-remove-the-global-package)
-  - [Step 2: Delete Configuration, Keys & Saved Presets](#step-2-delete-configuration-keys--saved-presets)
-- [Interactive In-Terminal Package Installer](#interactive-in-terminal-package-installer)
-  - [Why this is safer than manual terminal installation](#why-this-is-safer-than-manual-terminal-installation)
-- [Enterprise-Grade Security Guardrails](#enterprise-grade-security-guardrails)
-  - [1. GitLeaks Pre-Push Secret Scanning](#1-gitleaks-pre-push-secret-scanning)
-  - [2. Dependency Injection & Typo-Squatting Defense](#2-dependency-injection--typo-squatting-defense)
-  - [3. Safe Generative Code Writing (tell)](#3-safe-generative-code-writing-tell)
-  - [4. Guarded Production Deployments (deploy)](#4-guarded-production-deployments-deploy)
-  - [5. Local Credential Privacy](#5-local-credential-privacy)
-- [Scaffolding Recipes & LTS Stack](#scaffolding-recipes--lts-stack)
-  - [Full-Stack Connected Recipes](#full-stack-connected-recipes)
-  - [Standalone Frontend & Backend Recipes](#standalone-frontend--backend-recipes)
-  - [Proactive Runtime Pre-Flight Checks](#proactive-runtime-pre-flight-checks)
-- [AI Provider & API Key Management](#ai-provider--api-key-management)
-- [Unified Git & GitHub Automation](#unified-git--github-automation)
-- [Bidirectional Terminal History & Real-Time Highlighting](#bidirectional-terminal-history--real-time-highlighting)
-- [Command Reference](#command-reference)
-- [Testing & Verification](#testing--verification)
-- [License](#license)
+| # | Section | Overview & Key Capabilities | Navigation |
+|---|---|---|:---:|
+| 01 | **Architecture & Value Proposition** | Persistent PTY shell overlay, zero-cloud architecture, local dev environment | [View](#architecture--value-proposition) |
+| 02 | **Cost & Local Execution FAQ** | 100% free pricing model, local execution details, API key ownership | [View](#cost--local-execution-faq) |
+| 03 | **Installation Guide** | Global npm setup, local development clone, dependency setup | [View](#installation-guide) |
+| 04 | **Complete Uninstallation Guide** | Clean package removal, deleting configuration, keys & saved presets | [View](#complete-uninstallation--deletion-guide) |
+| 05 | **In-Terminal Package Installer** | Contextual dependency detection, injection protection, 1-click install | [View](#interactive-in-terminal-package-installer) |
+| 06 | **Enterprise-Grade Security Guardrails** | GitLeaks pre-push scanner, package regex checks, preview approvals | [View](#enterprise-grade-security-guardrails) |
+| 07 | **Scaffolding Recipes & LTS Stack** | 13 connected & standalone frameworks, pinned LTS runtimes, pre-flight checks | [View](#scaffolding-recipes--lts-stack) |
+| 08 | **AI Provider & API Key Management** | Pluggable providers (Groq, OpenAI, Gemini, Ollama), auto key detection | [View](#ai-provider--api-key-management) |
+| 09 | **Unified Git & GitHub Automation** | Single-command staging, commit, push, and automated `gh` repository creation | [View](#unified-git--github-automation) |
+| 10 | **Bidirectional History & Highlighting** | Bidirectional shell history sync (Bash/Zsh/PowerShell), live syntax highlighting | [View](#bidirectional-terminal-history--real-time-highlighting) |
+| 11 | **Command Reference** | Comprehensive quick-reference table for all RapidFire commands | [View](#command-reference) |
+| 12 | **Testing & Verification** | 24 automated test suites, simulated remotes, security audit checks | [View](#testing--verification) |
+| 13 | **License** | Open-source MIT license details | [View](#license) |
 
 ---
 
@@ -356,9 +344,9 @@ npm test
 
 ```text
 ======================================================
-Summary: 23 passed, 0 failed (23 total)
+Summary: 24 passed, 0 failed (24 total)
 ======================================================
-ALL 23 TEST SUITES PASSED FLAWLESSLY!
+ALL 24 TEST SUITES PASSED FLAWLESSLY!
 ```
 
 ---
