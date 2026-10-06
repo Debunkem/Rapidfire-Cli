@@ -1,0 +1,45 @@
+{
+  "name": "rapidfire-cli",
+  "version": "0.1.4",
+  "description": "Terminal overlay and shell passthrough REPL with instant developer scaffolding recipes",
+  "main": "bin/rapidfire.js",
+  "bin": {
+    "rapidfire": "bin/rapidfire.js",
+    "rapidfire-cli": "bin/rapidfire.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "node bin/rapidfire.js",
+    "test": "node test/test_all.js"
+  },
+  "keywords": [
+    "cli",
+    "repl",
+    "pty",
+    "scaffolding",
+    "terminal",
+    "developer-tools"
+  ],
+  "author": "Vedansh Shrivastava (https://github.com/Debunkem)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Debunkem/rapidfire-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Debunkem/rapidfire-cli/issues"
+  },
+  "homepage": "https://github.com/Debunkem/rapidfire-cli#readme",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "fs-extra": "^11.2.0",
+    "node-pty": "^1.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

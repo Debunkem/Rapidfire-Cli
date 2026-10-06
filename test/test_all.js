@@ -1,0 +1,55 @@
+const { execSync } = require('child_process');
+const path = require('path');
+
+const testScripts = [
+  'test/test_helpers.js',
+  'test/test_manifest.js',
+  'test/test_integrations.js',
+  'test/test_ai.js',
+  'test/test_ai_context.js',
+  'test/test_dep_security.js',
+  'test/test_presets.js',
+  'test/test_smart_preset.js',
+  'test/test_deploy.js',
+  'test/test_recipes.js',
+  'test/test_new_recipes.js',
+  'test/test_standalone_frontends.js',
+  'test/test_interactive_suggest.js',
+  'test/test_pty_passthrough.js',
+  'test/test_cross_platform.js',
+  'test/test_tell.js',
+  'test/test_venv_prompt.js',
+  'test/test_key_command.js',
+  'test/test_prereqs_and_lts.js'
+];
+
+console.log('\n======================================================');
+console.log('       RAPIDFIRE CLI MASTER VERIFICATION SUITE       ');
+console.log('======================================================\n');
+
+let passed = 0;
+let failed = 0;
+
+for (const script of testScripts) {
+  const fullPath = path.resolve(__dirname, '..', script);
+  console.log(`\x1b[36m▶ Running: ${script}\x1b[0m`);
+  try {
+    execSync(`node "${fullPath}"`, { stdio: 'inherit' });
+    console.log(`\x1b[32m✔ Passed: ${script}\x1b[0m\n`);
+    passed++;
+  } catch {
+    console.error(`\x1b[31m✖ Failed: ${script}\x1b[0m\n`);
+    failed++;
+  }
+}
+
+console.log('======================================================');
+console.log(`Summary: ${passed} passed, ${failed} failed (${testScripts.length} total)`);
+console.log('======================================================\n');
+
+if (failed > 0) {
+  process.exit(1);
+} else {
+  console.log(`\x1b[32mALL ${testScripts.length} TEST SUITES PASSED FLAWLESSLY!\x1b[0m\n`);
+  process.exit(0);
+}
