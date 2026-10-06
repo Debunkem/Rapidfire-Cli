@@ -134,14 +134,6 @@ class RapidfireRepl {
         this.isPassthroughRunning = false;
         this.expectedEcho = null;
         this.prompt();
-      } else if (this.isPassthroughRunning) {
-        // Fallback debounce for streaming commands that don't emit sentinel
-        if (this.idleTimer) clearTimeout(this.idleTimer);
-        this.idleTimer = setTimeout(() => {
-          this.isPassthroughRunning = false;
-          this.expectedEcho = null;
-          this.prompt();
-        }, 300);
       }
     });
 
