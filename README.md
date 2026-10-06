@@ -281,4 +281,4 @@ ALL 19 TEST SUITES PASSED FLAWLESSLY!
 
 ## License
 
-MIT © [Vedansh Shrivastava](https://github.com/Debunkem)
+MIT © [Debunkem](https://github.com/Debunkem)

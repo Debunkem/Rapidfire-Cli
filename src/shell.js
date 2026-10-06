@@ -54,7 +54,7 @@ function resolveShell() {
     const ps = 'powershell.exe';
     return {
       shell: process.env.COMSPEC || ps,
-      args: ['-NoLogo']
+      args: ['-NoLogo', '-NoProfile', '-Command', '-']
     };
   }
 
@@ -71,7 +71,7 @@ function resolveShell() {
   if (userShell.includes('pwsh') || userShell.includes('powershell')) {
     return {
       shell: userShell,
-      args: ['-NoLogo']
+      args: ['-NoLogo', '-NoProfile', '-Command', '-']
     };
   }
   return {
@@ -123,7 +123,7 @@ class PersistentShell {
 
     if (!this.ptyProcess) {
       // Robust standard spawn fallback for environments without native PTY binaries or PowerShell
-      const finalArgs = isPowerShell ? ['-NoLogo', '-NoProfile'] : args;
+      const finalArgs = isPowerShell ? ['-NoLogo', '-NoProfile', '-Command', '-'] : args;
       const cpProc = spawn(shell, finalArgs, {
         cwd: process.cwd(),
         env: process.env,

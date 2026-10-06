@@ -44,20 +44,23 @@ class RapidfireRepl {
       if (this.isPassthroughRunning) {
         let chunk = data;
 
+        // Clean internal PowerShell / subshell prompt strings so they don't collide with rapidfire prompt
+        if (chunk) {
+          chunk = chunk.replace(/PS\s+[^\r\n>]+>\s*/g, '');
+        }
+
         // Strip the terminal driver's echo of the command typed by the user
-        if (this.expectedEcho) {
+        if (this.expectedEcho && chunk) {
           const trimmedEcho = this.expectedEcho.trim();
           const escaped = trimmedEcho.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
           const regex = new RegExp('^\\s*' + escaped + '(\\r?\\n)?');
           if (regex.test(chunk)) {
             chunk = chunk.replace(regex, '');
             this.expectedEcho = null;
+          } else if (chunk.trim() === trimmedEcho) {
+            chunk = '';
+            this.expectedEcho = null;
           }
-        }
-
-        // Clean internal PowerShell prompt strings so they don't collide with rapidfire prompt
-        if (this.shell.isPowerShell && chunk) {
-          chunk = chunk.replace(/PS\s+[^\r\n>]+>\s*/g, '');
         }
 
         if (chunk) {
