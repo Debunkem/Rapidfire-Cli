@@ -51,6 +51,29 @@ class RapidfireRepl {
       };
     }
 
+    // Hook character insertion so every keystroke triggers instant syntax highlighting
+    // (Default Node readline only redraws on backspace or cursor movement)
+    const symInsert = Object.getOwnPropertySymbols(Object.getPrototypeOf(this.rl)).find((s) =>
+      s.toString().includes('_insertString')
+    );
+    if (symInsert && typeof this.rl[symInsert] === 'function') {
+      Object.defineProperty(this.rl, symInsert, {
+        value: function(c) {
+          if (this.cursor < this.line.length) {
+            const beg = this.line.slice(0, this.cursor);
+            const end = this.line.slice(this.cursor);
+            this.line = beg + c + end;
+          } else {
+            this.line += c;
+          }
+          this.cursor += c.length;
+          this._refreshLine();
+        },
+        configurable: true,
+        writable: true
+      });
+    }
+
     this.expectedEcho = null;
 
     // Pipe PTY output only when a pass-through command is running
