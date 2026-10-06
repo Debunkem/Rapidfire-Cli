@@ -18,6 +18,7 @@ const RAPIDFIRE_COMMANDS = [
   'load',
   'list',
   'deploy',
+  'push',
   'help',
   'exit',
   'quit'

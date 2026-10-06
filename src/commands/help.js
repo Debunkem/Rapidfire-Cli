@@ -33,36 +33,46 @@ ${bold}PROJECT SCAFFOLDING RECIPES (7 FRAMEWORKS / 13 OPTIONS):${reset}
     ${green}setup fastapi <folder>${reset}         Standalone high-performance FastAPI backend
     ${green}setup django <folder>${reset}          Standalone Django backend with SQLite
 
-${bold}AI CODE GENERATION & ASSISTANCE (GEMINI FREE TIER):${reset}
-  ${magenta}explain [file|folder]${reset}         Explain codebase architecture or file role
+  ${cyan}Initialization:${reset}
+    ${green}init [rapidfire]${reset}              Interactive scaffolding guide & prompt
+
+${bold}AI CODE GENERATION & ASSISTANCE:${reset}
+  ${magenta}explain [file|folder]${reset}         Analyze codebase architecture, folder tree, or source file role
                                 (e.g. "explain src/repl.js" or "explain .")
-  ${magenta}tell <instruction>${reset}            Instruct AI to generate files & code with preview & (Y/N) confirmation
+  ${magenta}tell <instruction>${reset}            Generate files & code with structure preview & (Y/N) safety approval
                                 (e.g. "tell create 2 cpp files named m1 m2")
-  ${magenta}suggest <description>${reset}         AI recommends stack + asks (Y/N) to automatically scaffold
-  ${magenta}ask <question>${reset}                Ask technical questions inline with conversational memory
-  ${magenta}ask clear${reset}                     Reset/clear multi-turn conversation memory
+  ${magenta}suggest <description>${reset}         Recommend architecture stack with interactive (Y/N) scaffolding prompt
+  ${magenta}ask <question>${reset}                Technical Q&A with conversational context & 1-click dependency installer
+  ${magenta}ask clear${reset}                     Reset multi-turn conversational context memory
 
-${bold}GEMINI API KEY CONFIGURATION:${reset}
-  ${magenta}key <gemini-key>${reset}              Save or update your Gemini API key
-  ${magenta}key status${reset}                    Show active key status (masked: AIzaS...1234) and source
-  ${magenta}key clear${reset}                     Remove saved key from ~/.rapidfire/config.json
+${bold}AI PROVIDER & API KEY CONFIGURATION:${reset}
+  ${magenta}key <api-key>${reset}                 Save or update API key (auto-detects Groq, OpenAI, or Gemini)
+  ${magenta}key model <model-name>${reset}        Override active model (e.g. "key model gpt-4o-mini")
+  ${magenta}key status${reset}                    Show active provider, model, masked key, and config source
+  ${magenta}key clear${reset}                     Remove saved credentials from ~/.rapidfire/config.json
 
-${bold}DEPLOYMENT & CLOUD:${reset}
-  ${cyan}deploy [folder]${reset}                Deploy frontend to Vercel & extract Live URL
+${bold}PROJECT PRESETS & REPRODUCIBILITY:${reset}
+  ${yellow}save preset <name> [folder]${reset}    Serialize project tree, files, and manifest into ~/.rapidfire/presets/
+  ${yellow}load preset <name> <folder>${reset}    Restore project structure and files from saved JSON preset
+  ${yellow}presets${reset} / ${yellow}list presets${reset}          List all saved project presets
 
-${bold}PROJECT PRESETS:${reset}
-  ${yellow}save preset <name> [folder]${reset}    Serialize project tree & manifest to ~/.rapidfire/presets/
-  ${yellow}load preset <name> <folder>${reset}    Restore project from saved JSON preset
-  ${yellow}presets${reset}                        List all saved presets
+${bold}GIT & GITHUB AUTOMATION:${reset}
+  ${green}git add <files> push [-branch <branch>] -commit "msg"${reset}
+                                Stage files (or .), commit, and push in one unified command
+                                (e.g. "git add . push -branch main -commit 'Add server module'")
+                                (e.g. "git add README.md push -commit 'updated'")
+
+${bold}PRODUCTION DEPLOYMENT:${reset}
+  ${cyan}deploy vercel [folder]${reset}         Deploy frontend to Vercel production with clean working tree verification
 
 ${bold}SESSION COMMANDS:${reset}
   ${cyan}help${reset}                           Display this command reference
   ${cyan}exit${reset} / ${cyan}quit${reset}                    Exit Rapidfire cleanly
 
 ${bold}SHELL PASSTHROUGH:${reset}
-  ${dim}Any other command (e.g. ls, git, pwd, cd, docker, npm, gh) is piped directly into
-  the underlying persistent shell session. Environment variables, git status, and
-  current directory are preserved.${reset}
+  ${dim}Any other command (e.g. ls, git, pwd, cd, docker, npm, python, pip, gh) executes
+  directly inside the persistent background pseudo-terminal. Working directory,
+  environment variables, and shell state are fully preserved.${reset}
 `);
 }
 

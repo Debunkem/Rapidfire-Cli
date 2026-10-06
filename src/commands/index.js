@@ -7,6 +7,7 @@ const { handleDeploy } = require('./deploy');
 const { handleTell } = require('./tell');
 const { handleKey } = require('./key');
 const { handleExplain } = require('./explain');
+const { handlePush } = require('./push');
 
 /**
  * Parses user input line and checks if it matches a rapidfire internal command.
@@ -18,6 +19,21 @@ function matchCommand(line) {
 
   const tokens = trimmed.split(/\s+/);
   const cmd = tokens[0].toLowerCase();
+
+  // Unified git push commands:
+  // e.g. "push -m 'init'", "git add . push -branch main -commit 'init'", "add . push -m 'init'"
+  const hasPushToken = tokens.some((t) => t.toLowerCase() === 'push');
+  if (
+    cmd === 'push' ||
+    (cmd === 'git' && tokens[1]?.toLowerCase() === 'add' && hasPushToken) ||
+    (cmd === 'add' && hasPushToken) ||
+    (cmd === 'git' && tokens[1]?.toLowerCase() === 'push' && tokens.some((t) => t.startsWith('-m') || t.startsWith('-commit') || t.startsWith('-b') || t.startsWith('-branch')))
+  ) {
+    return {
+      name: 'push',
+      run: async (context) => handlePush(trimmed, context)
+    };
+  }
 
   if (cmd === 'help') {
     return {
@@ -141,7 +157,10 @@ const COMMON_SUGGESTIONS = {
   preset: 'presets',
   sugest: 'suggest',
   asl: 'ask',
-  deply: 'deploy'
+  deply: 'deploy',
+  psuh: 'push',
+  puhs: 'push',
+  phsu: 'push'
 };
 
 function getKeywordSuggestion(word) {

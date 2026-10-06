@@ -4,7 +4,7 @@ const { commandExists, run, getDjangoAdminCmd, createVirtualEnvironment, checkPr
 const { isDirEmpty } = require('../utils/fsHelpers');
 const { writeManifest } = require('../utils/manifest');
 const { installPrePushHook } = require('../integrations/gitleaks');
-const { isGhInstalled, isGhAuthenticated } = require('../integrations/gh');
+const { isGhInstalled, isGhAuthenticated, createRepo } = require('../integrations/gh');
 const { isVercelInstalled } = require('../integrations/vercel');
 
 // --- FRONTEND TEMPLATES ---
@@ -322,6 +322,42 @@ async function maybePromptForVenv(pythonDir, context) {
   }
 }
 
+async function maybePromptForGithubRepo(projectPath, targetFolder, context) {
+  if (!projectPath || !fse.existsSync(projectPath)) return;
+  if (!isGhInstalled()) return;
+
+  const promptText = `\nDo you want to create a remote GitHub repository for '${targetFolder}'? (Y/N): `;
+
+  let answer = 'n';
+  if (process.env.RAPIDFIRE_AUTO_GH === '1') {
+    answer = 'y';
+  } else if (context && typeof context.ask === 'function') {
+    answer = await context.ask(promptText);
+  } else if (context && context.rl) {
+    answer = await new Promise((resolve) => {
+      context.rl.question(promptText, (ans) => resolve(ans));
+    });
+  } else {
+    return;
+  }
+
+  if (answer && answer.trim().toLowerCase().startsWith('y')) {
+    if (!isGhAuthenticated()) {
+      console.log(`\x1b[33m[rapidfire] GitHub CLI is not authenticated. Run "gh auth login" in your terminal first.\x1b[0m`);
+      return;
+    }
+    console.log(`[rapidfire] Creating remote GitHub repository '${targetFolder}'...`);
+    const res = createRepo(projectPath, targetFolder, false);
+    if (res.success) {
+      console.log(`\x1b[32m✔ Remote GitHub repository '${targetFolder}' created and linked to origin!\x1b[0m`);
+    } else {
+      console.log(`\x1b[33m⚠ Could not create GitHub repository: ${res.message || res.error}\x1b[0m`);
+    }
+  } else {
+    console.log(`[rapidfire] Skipped remote GitHub repository creation.`);
+  }
+}
+
 // --- RECIPES ---
 
 async function handleSetup(args, context = {}) {
@@ -370,13 +406,13 @@ async function handleSetup(args, context = {}) {
 
   switch (stack) {
     case 'react':
-      setupStandaloneFrontend(projectPath, targetFolder, 'react');
+      await setupStandaloneFrontend(projectPath, targetFolder, 'react', context);
       break;
     case 'vue':
-      setupStandaloneFrontend(projectPath, targetFolder, 'vue');
+      await setupStandaloneFrontend(projectPath, targetFolder, 'vue', context);
       break;
     case 'svelte':
-      setupStandaloneFrontend(projectPath, targetFolder, 'svelte');
+      await setupStandaloneFrontend(projectPath, targetFolder, 'svelte', context);
       break;
     case 'react+fastapi':
       await setupFullstack(projectPath, targetFolder, 'react', 'fastapi', context);
@@ -468,6 +504,10 @@ cd backend
     await maybePromptForVenv(backendDir, context);
   }
 
+  if (context && (context.ask || context.rl || process.env.RAPIDFIRE_AUTO_GH)) {
+    await maybePromptForGithubRepo(projectPath, targetFolder, context);
+  }
+
   reportSuccess(targetFolder, `${frontend}+${backend}`);
 }
 
@@ -481,6 +521,10 @@ async function setupStandaloneFastAPI(projectPath, targetFolder, context = {}) {
 
   if (context && (context.ask || context.rl || process.env.RAPIDFIRE_AUTO_VENV)) {
     await maybePromptForVenv(projectPath, context);
+  }
+
+  if (context && (context.ask || context.rl || process.env.RAPIDFIRE_AUTO_GH)) {
+    await maybePromptForGithubRepo(projectPath, targetFolder, context);
   }
 
   reportSuccess(targetFolder, 'fastapi');
@@ -504,10 +548,14 @@ async function setupStandaloneDjango(projectPath, targetFolder, context = {}) {
     await maybePromptForVenv(projectPath, context);
   }
 
+  if (context && (context.ask || context.rl || process.env.RAPIDFIRE_AUTO_GH)) {
+    await maybePromptForGithubRepo(projectPath, targetFolder, context);
+  }
+
   reportSuccess(targetFolder, 'django');
 }
 
-function setupStandaloneFrontend(projectPath, targetFolder, frontend) {
+async function setupStandaloneFrontend(projectPath, targetFolder, frontend, context = {}) {
   if (!commandExists('npm')) {
     console.error('[rapidfire] Missing required tool: npm');
     return;
@@ -521,6 +569,11 @@ function setupStandaloneFrontend(projectPath, targetFolder, frontend) {
 
   writeManifest(projectPath, { frontend, backend: null, folderName: targetFolder });
   initGitAndHooks(projectPath);
+
+  if (context && (context.ask || context.rl || process.env.RAPIDFIRE_AUTO_GH)) {
+    await maybePromptForGithubRepo(projectPath, targetFolder, context);
+  }
+
   reportSuccess(targetFolder, frontend);
 }
 
@@ -535,7 +588,7 @@ function reportSuccess(folderName, stack) {
 
   if (isGhInstalled()) {
     if (isGhAuthenticated()) {
-      console.log(`  \x1b[32m• Create remote GitHub repo:\x1b[0m gh repo create "${folderName}" --public --source=. --push`);
+      console.log(`  \x1b[32m• Push to GitHub in 1 command:\x1b[0m push -m "initial commit" (or git add . push -branch main -m "msg")`);
     } else {
       console.log(`  \x1b[33m• GitHub CLI present:\x1b[0m run "gh auth login" to enable automatic remote repo creation.`);
     }

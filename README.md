@@ -4,11 +4,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-339933.svg?style=flat-square&logo=nodedotjs)](https://nodejs.org)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg?style=flat-square)](https://github.com/Debunkem/rapidfire-cli)
-[![Pricing](https://img.shields.io/badge/Cost-%240.00%20(100%25%20Free)-success.svg?style=flat-square)](https://aistudio.google.com/apikey)
+[![Pricing](https://img.shields.io/badge/Cost-%240.00%20(100%25%20Free)-success.svg?style=flat-square)](https://github.com/Debunkem/rapidfire-cli)
 
 **The High-Speed, Security-Hardened Developer Shell & Full-Stack Scaffolder**
 
-RapidFire is an interactive terminal overlay and persistent developer workspace that combines instant multi-framework project scaffolding, official Long-Term Support (LTS) dependencies, automated pre-push secret scanning (GitLeaks), one-click in-terminal package installation, and Google Gemini AI assistance into one unified workflow.
+RapidFire is an interactive terminal overlay and persistent developer workspace that combines instant multi-framework project scaffolding, official Long-Term Support (LTS) dependencies, automated pre-push secret scanning (GitLeaks), one-click in-terminal package installation, and modular AI assistance into one unified workflow.
 
 [Installation](#installation-guide) • [Interactive Package Installer](#interactive-in-terminal-package-installer) • [Security Guardrails](#enterprise-grade-security-guardrails) • [Scaffolding Recipes](#scaffolding-recipes--lts-stack) • [Commands](#command-reference)
 
@@ -37,7 +37,9 @@ RapidFire is an interactive terminal overlay and persistent developer workspace 
   - [Full-Stack Connected Recipes](#full-stack-connected-recipes)
   - [Standalone Frontend & Backend Recipes](#standalone-frontend--backend-recipes)
   - [Proactive Runtime Pre-Flight Checks](#proactive-runtime-pre-flight-checks)
-- [Gemini API Key Management](#gemini-api-key-management)
+- [AI Provider & API Key Management](#ai-provider--api-key-management)
+- [Unified Git & GitHub Automation](#unified-git--github-automation)
+- [Bidirectional Terminal History & Real-Time Highlighting](#bidirectional-terminal-history--real-time-highlighting)
 - [Command Reference](#command-reference)
 - [Testing & Verification](#testing--verification)
 - [License](#license)
@@ -52,17 +54,18 @@ RapidFire runs directly on your local computer as a persistent PTY terminal over
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │                           RAPIDFIRE DEVELOPER SHELL                          │
 ├───────────────────────────────┬──────────────────────────────────────────────┤
-│ Full-Stack Scaffolder         │ Gemini AI Assistant                          │
+│ Full-Stack Scaffolder         │ Pluggable AI Assistant                       │
 │  • 13 Connected Stack Recipes │  • ask: Multi-turn Q&A + 1-Click Installer   │
 │  • Bundled 100% Offline       │  • suggest: Interactive (Y/N) Stack Planner  │
 │  • Pinned Official LTS Stacks │  • tell: Multi-file Generation with Preview  │
 │  • Proactive Runtime Checks   │  • Persistent Local Key Storage (0600)       │
 ├───────────────────────────────┼──────────────────────────────────────────────┤
 │ 5-Pillar Security Suite       │ Productivity & Automation                    │
-│  • Automated GitLeaks Hook    │  • Directory & Workspace Presets (JSON)      │
-│  • PyPI & npm Registry Checks │  • Persistent Native Shell Passthrough (PTY) │
-│  • Path Traversal Defense     │  • Interactive Python venv Auto-Setup        │
-│  • Safe Deployment Approvals  │  • One-Command Production Vercel Deploys     │
+│  • Automated GitLeaks Hook    │  • Bidirectional Shell History (PS/Bash/Zsh) │
+│  • PyPI & npm Registry Checks │  • Real-Time Syntax Highlighting & Complete  │
+│  • Path Traversal Defense     │  • Directory & Workspace Presets (JSON)      │
+│  • Safe Deployment Approvals  │  • Interactive Python venv Auto-Setup        │
+│  • Clean Git Verification     │  • One-Command Production Vercel Deploys     │
 └────────────────────────────────┴──────────────────────────────────────────────┘
 ```
 
@@ -77,8 +80,8 @@ RapidFire runs directly on your local computer as a persistent PTY terminal over
 |---|---|
 | **Does it run in the cloud?** | **No.** RapidFire runs entirely locally on your computer using your local Node.js engine and CPU. |
 | **Are there any server costs?** | **$0.00.** There are no hosted servers, no subscriptions, and no credit card requirements. |
-| **Does the AI cost anything?** | **No.** RapidFire uses official Google AI Studio **Free Tier** models (`gemini-2.5-flash` / `gemini-3.5-flash-lite`). You can generate a free key in 10 seconds without providing any payment information. |
-| **Where is my data stored?** | **100% on your machine.** Your Gemini key and project presets are saved locally in `~/.rapidfire/config.json`. No telemetry or project data is ever transmitted to external servers. |
+| **Does the AI cost anything?** | **No.** RapidFire supports free-tier API keys (such as Groq or free provider keys) as well as 100% free offline local models (via Ollama). You can get started with zero cost. |
+| **Where is my data stored?** | **100% on your machine.** Your API key and project presets are saved locally in `~/.rapidfire/config.json`. No telemetry or project data is ever transmitted to external servers. |
 
 ---
 
@@ -212,8 +215,8 @@ RapidFire is built from the ground up with defensive engineering principles. Eve
 * Requires explicit user verification (`Confirm Vercel deployment? (Y/N): `) before calling the Vercel CLI.
 
 ### 5. Local Credential Privacy
-* Your Gemini API key is stored strictly on your local filesystem at `~/.rapidfire/config.json` with restricted permissions (`0600` on POSIX systems).
-* Commands like `key status` mask your key (e.g., `AIzaSy...1234`) to protect against shoulder-surfing during presentations or screen sharing.
+* Your AI API key is stored strictly on your local filesystem at `~/.rapidfire/config.json` with restricted permissions (`0600` on POSIX systems).
+* Commands like `key status` mask your key (e.g., `sk-...1234` or `gsk_...1234`) to protect against shoulder-surfing during presentations or screen sharing.
 
 ---
 
@@ -250,23 +253,72 @@ Before touching your filesystem, RapidFire runs runtime diagnostics:
 
 ---
 
-## Gemini API Key Management
+## AI Provider & API Key Management
 
-RapidFire makes managing your free AI credentials simple and permanent:
+RapidFire features a pluggable AI subsystem with automatic key detection. Just paste your API key—RapidFire auto-detects the provider and configures the optimal free-tier or fast model:
+
+* **Groq** (`gsk_...`) -> Free-tier `llama-3.3-70b-versatile`
+* **OpenAI** (`sk-...`) -> Fast `gpt-4o-mini`
+* **Gemini** (`AIza...`) -> Fast `gemini-2.5-flash`
+* **Ollama / Custom** -> Local or custom OpenAI-compatible endpoints
 
 ```bash
-# Save or update your Gemini key (saved to ~/.rapidfire/config.json)
-key <your_gemini_key>
+# Save or update your key (auto-detects provider & default model)
+key <your_api_key>
 
-# View current key status (masked for privacy) and source
+# View active provider, model, masked key, and source
 key status
 
-# Remove saved API key
+# Optional: Override the default model
+key model <model-name>
+
+# Remove saved credentials
 key clear
 ```
 
-- **Get a Free Key**: Get your free API key in seconds from [Google AI Studio](https://aistudio.google.com/apikey).
-- **Update Anytime**: Running `key <new_key>` will immediately overwrite any previous key.
+- **Update Anytime**: Running `key <new_key>` immediately updates your active provider and key.
+
+---
+
+## Unified Git & GitHub Automation
+
+RapidFire unifies staging, committing, and pushing into a single, intuitive command:
+
+```bash
+git add <files> push [-branch <branch>] -commit "<message>"
+```
+
+### Key Capabilities
+* **Flexible Staging**: Stage all files with `.` or stage individual files (e.g., `git add README.md ...` or `git add src/app.js ...`).
+* **Branch Targeting**: Specify target branches using either `-branch <name>` or `-<name> branch` (defaults to current active branch if omitted).
+* **Automatic GitHub Repo Provisioning**: If the local repository lacks a configured remote origin, RapidFire proactively detects your `gh` CLI credentials, prompts to create the GitHub repository, and sets the upstream tracking branch automatically.
+
+### Examples
+```bash
+# Push all files with a target branch and commit message
+git add . push -branch main -commit "Add server module"
+
+# Push a single file with commit message
+git add README.md push -m -commit "updated"
+
+# Push all files to a specific branch name
+git add . push -2nd branch -commit "new fix"
+```
+
+---
+
+## Bidirectional Terminal History & Real-Time Highlighting
+
+RapidFire seamlessly synchronizes command history across your host operating system and active shell environment:
+
+* **Instant Up-Arrow Recall**: When you launch RapidFire, pressing Up Arrow immediately cycles through commands previously executed in your normal terminal.
+* **Session Persistence**: When you exit RapidFire, all commands executed during your session are automatically saved back to your host shell's history file.
+* **Cross-Platform Host Support**:
+  * **Windows**: PowerShell PSReadLine (`ConsoleHost_history.txt`)
+  * **macOS**: Zsh (`~/.zsh_history`)
+  * **Linux**: Bash (`~/.bash_history`), PowerShell (`pwsh`)
+  * **RapidFire Dedicated Store**: Persistent fallback in `~/.rapidfire/history.txt`
+* **Real-Time Keystroke Highlighting**: Commands, subcommands, flags, and strings highlight on every character insertion without delay, styled after PowerShell PSReadLine themes.
 
 ---
 
@@ -275,19 +327,20 @@ key clear
 | Command | Category | Description |
 |---|---|---|
 | `help` | General | Display the interactive command manual |
-| `setup <recipe> <folder>` | Scaffolding | Scaffold any of the 13 full-stack or standalone projects |
+| `init` / `setup <recipe> <folder>` | Scaffolding | Scaffold any of the 13 full-stack projects or initialize RapidFire |
 | `explain [path]` | AI Analysis | Explains codebase architecture, folder tree, or source file role |
 | `ask <question>` | AI Companion | Technical Q&A with conversational memory & 1-click package installer |
 | `ask clear` | AI Companion | Clear conversation context memory |
 | `suggest <description>` | AI Companion | Recommends optimal architecture with interactive `(Y/N)` scaffold prompt |
 | `tell <instruction>` | AI Generation | Generates code and files with plan preview & `(Y/N)` safety approval |
-| `key <gemini-key>` | Configuration | Save or change your Gemini API key permanently |
-| `key status` | Configuration | Display active key status and source |
-| `key clear` | Configuration | Remove stored API key |
+| `key <api-key>` | Configuration | Save or change your AI API key (auto-detects provider) |
+| `key status` | Configuration | Display active AI provider, model, masked key, and source |
+| `key clear` | Configuration | Remove stored AI credentials |
 | `save preset <name> [folder]` | Presets | Serialize project files & manifest into `~/.rapidfire/presets/<name>.json` |
 | `load preset <name> <folder>` | Presets | Recreate project structure & files from a saved preset |
 | `presets` | Presets | List all saved workspace presets |
 | `deploy vercel` | Deployment | Deploy frontend to Vercel production with manual confirmation |
+| `git add <files> push [-branch <branch>] -commit "<msg>"` | Git Automation | Stage specific files or `.`, commit, and push in one unified command (auto-creates GitHub repo via `gh`) |
 | `exit` / `quit` | Session | Exit RapidFire cleanly |
 | *any shell command* | PTY Shell | Native passthrough (`cd`, `ls`, `git`, `npm`, `python`, `docker`) |
 
@@ -303,9 +356,9 @@ npm test
 
 ```text
 ======================================================
-Summary: 22 passed, 0 failed (22 total)
+Summary: 23 passed, 0 failed (23 total)
 ======================================================
-ALL 22 TEST SUITES PASSED FLAWLESSLY!
+ALL 23 TEST SUITES PASSED FLAWLESSLY!
 ```
 
 ---
