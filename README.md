@@ -273,24 +273,31 @@ key clear
 RapidFire unifies staging, committing, and pushing into a single, intuitive command:
 
 ```bash
-git add <files> push [-branch <branch>] -commit "<message>"
+git add <files> push [-b <branch>|-m] -commit "<message>"
 ```
 
 ### Key Capabilities
 * **Flexible Staging**: Stage all files with `.` or stage individual files (e.g., `git add README.md ...` or `git add src/app.js ...`).
-* **Branch Targeting**: Specify target branches using either `-branch <name>` or `-<name> branch` (defaults to current active branch if omitted).
+* **Branch Targeting**:
+  * **Main Branch**: Target `main` using `-m` or `-main` (e.g. `git add . push -m -commit "message"`).
+  * **Specific Branch**: Target any branch using `-b <branch>` or `-branch <branch>` (e.g. `git add . push -b feature1 -commit "message"`). If the branch does not exist locally, RapidFire automatically creates and switches to the new branch.
+* **Commit Message**: Provide the commit message using `-commit "<message>"`. Standard `-m "<message>"` (when `-commit` is absent) is also preserved.
+* **Automatic Rebase Recovery**: If remote `origin` has newer commits (non-fast-forward rejection), RapidFire automatically syncs via `git pull --rebase` and retries the push.
 * **Automatic GitHub Repo Provisioning**: If the local repository lacks a configured remote origin, RapidFire proactively detects your `gh` CLI credentials, prompts to create the GitHub repository, and sets the upstream tracking branch automatically.
 
 ### Examples
 ```bash
-# Push all files with a target branch and commit message
-git add . push -branch main -commit "Add server module"
+# Push all files directly to main
+git add . push -m -commit "Add server module"
+
+# Push all files to a specific branch (creates branch if needed)
+git add . push -b branch1 -commit "new feature"
+
+# Shorthand for main branch
+git add . push -main -commit "production update"
 
 # Push a single file with commit message
-git add README.md push -m -commit "updated"
-
-# Push all files to a specific branch name
-git add . push -2nd branch -commit "new fix"
+git add README.md push -m -commit "updated documentation"
 ```
 
 ---
@@ -328,7 +335,7 @@ RapidFire seamlessly synchronizes command history across your host operating sys
 | `load preset <name> <folder>` | Presets | Recreate project structure & files from a saved preset |
 | `presets` | Presets | List all saved workspace presets |
 | `deploy vercel` | Deployment | Deploy frontend to Vercel production with manual confirmation |
-| `git add <files> push [-branch <branch>] -commit "<msg>"` | Git Automation | Stage specific files or `.`, commit, and push in one unified command (auto-creates GitHub repo via `gh`) |
+| `git add <files> push [-b <branch>|-m] -commit "<msg>"` | Git Automation | Stage specific files or `.`, commit, and push in one unified command (supports `-m` for main, `-b` for branch, and auto-sync) |
 | `exit` / `quit` | Session | Exit RapidFire cleanly |
 | *any shell command* | PTY Shell | Native passthrough (`cd`, `ls`, `git`, `npm`, `python`, `docker`) |
 
