@@ -22,7 +22,8 @@ const testScripts = [
   'test/test_key_command.js',
   'test/test_prereqs_and_lts.js',
   'test/test_explain.js',
-  'test/test_highlighter.js'
+  'test/test_highlighter.js',
+  'test/test_history.js'
 ];
 
 console.log('\n======================================================');

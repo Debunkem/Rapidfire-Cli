@@ -5,6 +5,7 @@ const fs = require('fs');
 const { PersistentShell } = require('./shell');
 const { matchCommand } = require('./commands');
 const { highlightSyntax, createCompleter } = require('./utils/highlighter');
+const { loadHistory, saveSessionHistory } = require('./utils/history');
 
 class RapidfireRepl {
   constructor() {
@@ -12,6 +13,7 @@ class RapidfireRepl {
     this.rl = null;
     this.isPassthroughRunning = false;
     this.idleTimer = null;
+    this.sessionCommands = [];
   }
 
   getPrompt() {
@@ -37,6 +39,11 @@ class RapidfireRepl {
       prompt: this.getPrompt(),
       completer: createCompleter()
     });
+
+    // Pre-populate readline history with previous host shell commands (PowerShell, Bash, Zsh)
+    try {
+      this.rl.history = loadHistory(100);
+    } catch {}
 
     // Real-time syntax highlighting hook on readline output
     if (typeof this.rl._writeToOutput === 'function') {
@@ -155,6 +162,9 @@ ${dim}Type 'help' for built-in recipes, or run any standard shell command.${rese
       return;
     }
 
+    // Record command into session history for host synchronization
+    this.sessionCommands.push(line);
+
     // Check if line is a rapidfire internal command
     const matched = matchCommand(line);
 
@@ -217,6 +227,9 @@ ${dim}Type 'help' for built-in recipes, or run any standard shell command.${rese
   shutdown() {
     console.log('\n\x1b[33m[rapidfire] Exiting....\x1b[0m');
     if (this.idleTimer) clearTimeout(this.idleTimer);
+    try {
+      saveSessionHistory(this.sessionCommands);
+    } catch {}
     if (this.shell) {
       this.shell.kill();
     }
