@@ -120,6 +120,14 @@ async function runTests() {
     assert(res3.success, 'Push on clean working tree should succeed cleanly');
     assert.strictEqual(res3.commitMade, false, 'No new commit should be created when clean');
 
+    // Test 7: Pushing a brand-new branch when working tree is clean
+    console.log('[Test 7] Testing pushing new branch with clean working tree...');
+    const resNewBranchClean = await handlePush('git add . push -b branch3 -commit "README.md update"', { cwd: localProject });
+    assert(resNewBranchClean.success, 'Push to new branch branch3 should succeed');
+    assert.strictEqual(resNewBranchClean.commitMade, false, 'No new commit should be created since tree is clean');
+    const branch3RemoteExists = runCapture('git rev-parse --verify origin/branch3', { cwd: localProject }).trim();
+    assert(branch3RemoteExists, 'Remote origin/branch3 should exist after push');
+
     console.log('✓ Full unified push workflow verified with 100% success!');
   } finally {
     fse.removeSync(tmpRoot);

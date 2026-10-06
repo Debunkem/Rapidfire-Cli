@@ -273,31 +273,32 @@ key clear
 RapidFire unifies staging, committing, and pushing into a single, intuitive command:
 
 ```bash
-git add <files> push [-b <branch>|-m] -commit "<message>"
+git add <files> push [-b <branch>] -m "<message>"
 ```
 
 ### Key Capabilities
 * **Flexible Staging**: Stage all files with `.` or stage individual files (e.g., `git add README.md ...` or `git add src/app.js ...`).
+* **Active Branch (Default)**: If `-b` is omitted, RapidFire automatically stages, commits, and pushes to your current active branch (e.g., `main` or `feature-xyz`).
 * **Branch Targeting**:
-  * **Main Branch**: Target `main` using `-m` or `-main` (e.g. `git add . push -m -commit "message"`).
-  * **Specific Branch**: Target any branch using `-b <branch>` or `-branch <branch>` (e.g. `git add . push -b feature1 -commit "message"`). If the branch does not exist locally, RapidFire automatically creates and switches to the new branch.
-* **Commit Message**: Provide the commit message using `-commit "<message>"`. Standard `-m "<message>"` (when `-commit` is absent) is also preserved.
+  * **Explicit Branch**: Target any branch (such as `main`) using `-b <branch>` or `-branch <branch>` (e.g., `git add . push -b main -m "production update"`).
+  * **Automatic Branch Creation**: If the target branch does not exist locally (e.g., `git add . push -b feature1 -m "new feature"`), RapidFire automatically creates and switches to the new branch before committing and pushing.
+* **Commit Message**: Provide your commit message using `-m "<message>"` or `-commit "<message>"`. Compound flags like `-m -commit "<message>"` are also supported for convenience.
 * **Automatic Rebase Recovery**: If remote `origin` has newer commits (non-fast-forward rejection), RapidFire automatically syncs via `git pull --rebase` and retries the push.
 * **Automatic GitHub Repo Provisioning**: If the local repository lacks a configured remote origin, RapidFire proactively detects your `gh` CLI credentials, prompts to create the GitHub repository, and sets the upstream tracking branch automatically.
 
 ### Examples
 ```bash
-# Push all files directly to main
-git add . push -m -commit "Add server module"
+# Push all files to the current active branch
+git add . push -m "Add server module"
 
-# Push all files to a specific branch (creates branch if needed)
-git add . push -b branch1 -commit "new feature"
+# Explicitly push all files to main from any branch
+git add . push -b main -m "Add server module"
 
-# Shorthand for main branch
-git add . push -main -commit "production update"
+# Push all files to a new or existing feature branch
+git add . push -b feature1 -commit "new feature"
 
-# Push a single file with commit message
-git add README.md push -m -commit "updated documentation"
+# Push a single file with commit message to current branch
+git add README.md push -m "updated documentation"
 ```
 
 ---
