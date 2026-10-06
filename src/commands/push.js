@@ -258,7 +258,11 @@ async function handlePush(rawArgs, context = {}) {
   console.log(`${cyan}[rapidfire-git] Pushing to origin/${targetBranch}...${reset}`);
   try {
     run(`git push -u origin "${targetBranch}"`, { cwd });
-    console.log(`\n${green}${bold}✔ Successfully pushed to origin/${targetBranch}!${reset}\n`);
+    if (commitMade) {
+      console.log(`\n${green}${bold}✔ Successfully committed and pushed to origin/${targetBranch}!${reset}\n`);
+    } else {
+      console.log(`\n${cyan}${bold}✔ origin/${targetBranch} is up to date (no new changes to push).${reset}\n`);
+    }
     return {
       success: true,
       branch: targetBranch,
