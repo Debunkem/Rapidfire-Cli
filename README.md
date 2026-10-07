@@ -10,7 +10,7 @@
 
 RapidFire is a lightweight terminal overlay and interactive developer environment that supercharges your existing shell (PowerShell, Bash, or Zsh). It bridges the gap between terminal productivity, local project scaffolding, and AI assistance: scaffold production-grade full-stack architectures in under 3 seconds, install AI-recommended packages with one keystroke, scan for leaked secrets before every push via GitLeaks, and execute unified Git workflows across branches without leaving your terminal.
 
-[Installation](#installation-guide) • [What RapidFire Solves](#what-rapidfire-solves-in-practice) • [Interactive Package Installer](#interactive-in-terminal-package-installer) • [Security Guardrails](#enterprise-grade-security-guardrails) • [Scaffolding Recipes](#scaffolding-recipes--lts-stack) • [Commands](#command-reference)
+[Requirements](#system-requirements--prerequisites) • [Installation & Removal](#installation--uninstallation-guide) • [What RapidFire Solves](#what-rapidfire-solves-in-practice) • [Interactive Package Installer](#interactive-in-terminal-package-installer) • [Security Guardrails](#enterprise-grade-security-guardrails) • [Commands](#command-reference)
 
 ---
 
@@ -20,9 +20,9 @@ RapidFire is a lightweight terminal overlay and interactive developer environmen
 |---|---|---|:---:|
 | 01 | **What RapidFire Solves in Practice** | Real-world developer workflow comparison, native PTY shell passthrough | [View](#what-rapidfire-solves-in-practice) |
 | 02 | **Architecture & Value Proposition** | Persistent terminal overlay, zero-cloud architecture, local dev environment | [View](#architecture--value-proposition) |
-| 03 | **Cost & Local Execution FAQ** | 100% free pricing model, local execution details, API key ownership | [View](#cost--local-execution-faq) |
-| 04 | **Installation Guide** | Global npm setup, launching the CLI, local developer clone | [View](#installation-guide) |
-| 05 | **Complete Uninstallation Guide** | Clean package removal, deleting configuration, keys & saved presets | [View](#complete-uninstallation--deletion-guide) |
+| 03 | **System Requirements & Prerequisites** | Node.js, npm, supported operating systems, optional tools & runtime matrix | [View](#system-requirements--prerequisites) |
+| 04 | **Cost & Local Execution FAQ** | 100% free pricing model, local execution details, API key ownership | [View](#cost--local-execution-faq) |
+| 05 | **Installation & Uninstallation Guide** | Global npm setup, update commands, developer clone, complete clean removal | [View](#installation--uninstallation-guide) |
 | 06 | **In-Terminal Package Installer** | Contextual dependency detection, injection protection, 1-click install | [View](#interactive-in-terminal-package-installer) |
 | 07 | **Enterprise-Grade Security Guardrails** | GitLeaks pre-push scanner, package regex checks, preview approvals | [View](#enterprise-grade-security-guardrails) |
 | 08 | **Scaffolding Recipes & LTS Stack** | 13 connected & standalone frameworks, pinned LTS runtimes, pre-flight checks | [View](#scaffolding-recipes--lts-stack) |
@@ -96,6 +96,38 @@ RapidFire executes 100% locally on your computer with zero telemetry and zero cl
 
 ---
 
+## System Requirements & Prerequisites
+
+RapidFire is designed to run seamlessly across all major platforms with minimal prerequisites:
+
+### Core Runtime Matrix
+| Requirement | Minimum Version | Recommended Version | Purpose |
+|---|---|---|---|
+| **Node.js** | `>= 18.0.0` | `20.x` or `22.x` LTS | Core CLI runtime engine |
+| **npm** | `>= 9.0.0` | `10.x` or `11.x` | Package installation & global binary linking |
+
+### Supported Operating Systems
+* **Windows**: Windows 10 or Windows 11 (Supports Windows PowerShell 5.1+, PowerShell 7 `pwsh`, and CMD).
+* **macOS**: macOS 12 (Monterey) or higher (Supports default `/bin/zsh` and `/bin/bash`).
+* **Linux**: Any standard modern distribution (Ubuntu, Debian, Fedora, Arch Linux, CentOS, openSUSE) with `bash`, `zsh`, or `pwsh`.
+
+### Note on npm 11+ Install Warnings (`allow-scripts`)
+When installing RapidFire on modern npm versions (v11+), you may see a harmless notification:
+```text
+npm warn allow-scripts 1 package has install scripts not yet covered by allowScripts: node-pty
+```
+**This is not an error.** It is an npm 11+ security notice informing you that the terminal driver (`node-pty`) includes standard build scripts. The package is fully installed. RapidFire also includes an automatic standard `spawn` adapter that runs out of the box even in environments where native C++ compilation is unavailable.
+
+### Optional Developer Tools (Recommended for Full Feature Set)
+While RapidFire works immediately for terminal operations and scaffolding, these tools unlock its full automation:
+* **Git** (`git`): Recommended for repository initialization, pre-push secret scanning, and the unified `git add . push` command.
+* **Python 3** (`python` / `python3`) + `pip`: Required if you intend to scaffold and run Python stacks (FastAPI, Django, Flask).
+* **GitHub CLI** (`gh`): Allows RapidFire to automatically create public/private GitHub repositories and link remote origins with zero browser visits.
+* **GitLeaks** (`gitleaks`): Enables automated scanning for leaked API keys and tokens in `.git/hooks/pre-push`.
+* **Vercel CLI** (`vercel`): Enables the one-command production frontend deployment workflow (`deploy vercel`).
+
+---
+
 ## Cost & Local Execution FAQ
 
 ### Is RapidFire a cloud service? Does it cost money?
@@ -110,9 +142,10 @@ RapidFire executes 100% locally on your computer with zero telemetry and zero cl
 
 ---
 
-## Installation Guide
+## Installation & Uninstallation Guide
 
-Install RapidFire system-wide on your machine using npm:
+### Global Installation
+Install RapidFire system-wide using npm:
 
 ```bash
 npm install -g rapidfire-cli
@@ -125,6 +158,12 @@ rapidfire
 rapidfire-cli
 ```
 
+### Updating to the Latest Release
+To update your existing global installation to the newest version:
+```bash
+npm install -g rapidfire-cli@latest
+```
+
 ### Local Developer Clone
 If you are developing or contributing to the RapidFire codebase:
 ```bash
@@ -135,31 +174,28 @@ npm test      # Runs all 24 automated test suites
 npm start     # Starts local REPL
 ```
 
----
-
-## Complete Uninstallation & Deletion Guide
-
+### Complete Uninstallation & Clean Removal
 If you ever wish to remove RapidFire and all associated local configuration from your system:
 
-### Step 1: Remove the Global Package
+#### Step 1: Remove the Global Package
 ```bash
 npm uninstall -g rapidfire-cli
 ```
 
-### Step 2: Delete Configuration, Keys & Saved Presets
+#### Step 2: Delete Configuration, Keys & Saved Presets
 RapidFire stores your API key and custom presets in your local user directory under `~/.rapidfire`. To erase all local configuration:
 
-- **Linux & macOS**:
+* **Linux & macOS**:
   ```bash
   rm -rf ~/.rapidfire
   ```
 
-- **Windows (PowerShell)**:
+* **Windows (PowerShell)**:
   ```powershell
   Remove-Item -Recurse -Force ~/.rapidfire
   ```
 
-- **Windows (Command Prompt / CMD)**:
+* **Windows (Command Prompt / CMD)**:
   ```cmd
   rmdir /s /q "%USERPROFILE%\.rapidfire"
   ```
