@@ -27,10 +27,10 @@ async function runTests() {
   assert.strictEqual(p3.branch, 'main', 'Should parse -m with -commit as branch: main');
   assert.strictEqual(p3.message, 'updated', 'Should parse message correctly');
 
-  const pUser = parsePushArgs('git add . push -m -commit "README.md update"');
-  assert.deepStrictEqual(pUser.files, ['.'], 'Should parse files as [.]');
-  assert.strictEqual(pUser.branch, 'main', 'Should parse -m as branch main');
-  assert.strictEqual(pUser.message, 'README.md update', 'Should parse message correctly');
+  const pUserExact = parsePushArgs('git add . push -m -commit "gitpush command fix 1.8v"');
+  assert.deepStrictEqual(pUserExact.files, ['.'], 'Should parse files as [.]');
+  assert.strictEqual(pUserExact.branch, 'main', 'Should parse -m as branch main');
+  assert.strictEqual(pUserExact.message, 'gitpush command fix 1.8v', 'Should parse commit message correctly');
 
   const pMainFlag = parsePushArgs('git add . push -main -commit "test main"');
   assert.strictEqual(pMainFlag.branch, 'main', 'Should parse -main as branch main');
@@ -43,18 +43,12 @@ async function runTests() {
 
   const p5 = parsePushArgs('push -m "quick update"');
   assert.deepStrictEqual(p5.files, ['.'], 'Default files should be [.]');
-  assert.strictEqual(p5.branch, null, 'Branch should remain null (current branch) when standard -m msg is used');
+  assert.strictEqual(p5.branch, null, 'Branch should remain null (current branch) when standard -m msg is used without -commit');
   assert.strictEqual(p5.message, 'quick update', 'Should parse -m flag');
 
   const p6 = parsePushArgs('push -b feature-123 -commit "wip commit"');
   assert.strictEqual(p6.branch, 'feature-123', 'Should parse -b flag');
   assert.strictEqual(p6.message, 'wip commit', 'Should parse -commit flag');
-
-  const p7 = parsePushArgs('git add . push -b branch1 -commit "test features"');
-  assert.strictEqual(p7.branch, 'branch1', 'Should parse -b branch1 correctly');
-
-  const p8 = parsePushArgs('git add . push -brach1 -commit "test features"');
-  assert.strictEqual(p8.branch, 'branch1', 'Should tolerate -brach1 typo as branch1');
 
   console.log('✓ All syntax parsing combinations verified successfully.');
 
@@ -138,8 +132,16 @@ async function runTests() {
     assert(res3.success, 'Push on clean working tree should succeed cleanly');
     assert.strictEqual(res3.commitMade, false, 'No new commit should be created when clean');
 
-    // Test 7: Push back to main from a feature branch using -m -commit
-    console.log('[Test 7] Testing push back to main with "git add . push -m -commit \"switch back to main\""...');
+    // Test 7: Pushing a brand-new branch when working tree is clean
+    console.log('[Test 7] Testing pushing new branch with clean working tree...');
+    const resNewBranchClean = await handlePush('git add . push -b branch3 -commit "README.md update"', { cwd: localProject });
+    assert(resNewBranchClean.success, 'Push to new branch branch3 should succeed');
+    assert.strictEqual(resNewBranchClean.commitMade, false, 'No new commit should be created since tree is clean');
+    const branch3RemoteExists = runCapture('git rev-parse --verify origin/branch3', { cwd: localProject }).trim();
+    assert(branch3RemoteExists, 'Remote origin/branch3 should exist after push');
+
+    // Test 8: Pushing back to main using -m -commit from branch3
+    console.log('[Test 8] Testing push back to main with "git add . push -m -commit \"switch back to main\""...');
     fs.writeFileSync(path.join(localProject, 'main_update.js'), 'console.log("Main update");\n', 'utf8');
 
     const resMain = await handlePush('git add . push -m -commit "switch back to main"', { cwd: localProject });

@@ -57,10 +57,15 @@ ${bold}PROJECT PRESETS & REPRODUCIBILITY:${reset}
   ${yellow}presets${reset} / ${yellow}list presets${reset}          List all saved project presets
 
 ${bold}GIT & GITHUB AUTOMATION:${reset}
-  ${green}git add <files> push [-branch <branch>] -commit "msg"${reset}
+  ${green}git add <files> push [-b <branch>|-m] -commit "msg"${reset}
                                 Stage files (or .), commit, and push in one unified command
-                                (e.g. "git add . push -branch main -commit 'Add server module'")
-                                (e.g. "git add README.md push -commit 'updated'")
+                                • Push to main: "git add . push -m -commit 'Add server module'"
+                                • Current branch: "git add . push -m 'Add server module'"
+                                • Specific branch: "git add . push -b feature1 -commit 'new feature'"
+                                • Shorthand: "git add . push -main -commit 'msg'"
+                                • Single file: "git add README.md push -m 'updated docs'"
+                                • Automatically recovers and syncs via rebase if remote is ahead
+                                • Automatically links remote repository via GitHub CLI (gh) if needed
 
 ${bold}PRODUCTION DEPLOYMENT:${reset}
   ${cyan}deploy vercel [folder]${reset}         Deploy frontend to Vercel production with clean working tree verification

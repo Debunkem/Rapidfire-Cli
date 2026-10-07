@@ -52,6 +52,7 @@ function parsePushArgs(input) {
 
   // Post-push tokens
   const postPush = tokens.slice(pushIdx + 1);
+
   // Check if an explicit commit flag exists in postPush (-commit, --commit, -message, --message)
   const hasExplicitCommitFlag = postPush.some((t) => {
     const l = t.toLowerCase();
@@ -72,14 +73,14 @@ function parsePushArgs(input) {
     const token = postPush[i];
     const lower = token.toLowerCase();
 
-    // Branch flag: -b, -branch, --branch, -brach, -branchname, --branchname
-    if (lower === '-b' || lower === '-branch' || lower === '--branch' || lower === '-brach' || lower === '-branchname' || lower === '--branchname') {
+    // Branch flag: -b, -branch, --branch, -branchname, --branchname
+    if (lower === '-b' || lower === '-branch' || lower === '--branch' || lower === '-branchname' || lower === '--branchname') {
       if (i + 1 < postPush.length && !postPush[i + 1].startsWith('-')) {
         branch = postPush[i + 1];
         i += 2;
         continue;
       }
-    } else if (lower.startsWith('-b=') || lower.startsWith('-branch=') || lower.startsWith('-brach=') || lower.startsWith('--branch=')) {
+    } else if (lower.startsWith('-b=') || lower.startsWith('-branch=') || lower.startsWith('--branch=')) {
       branch = token.split('=')[1];
       i++;
       continue;
@@ -95,15 +96,6 @@ function parsePushArgs(input) {
       // Handles e.g. -2nd branch or -main branch
       branch = token.replace(/^-+/, '');
       i += 2;
-      continue;
-    } else if (lower.startsWith('-branch') || lower.startsWith('-brach')) {
-      // Handles attached branch names like -branch1, -brach1, -branch-dev
-      let raw = token.replace(/^-+/, '');
-      if (raw.toLowerCase().startsWith('brach')) {
-        raw = raw.replace(/^brach/i, 'branch');
-      }
-      branch = raw;
-      i++;
       continue;
     } else if (lower === '-m') {
       // When -commit is also present, -m is interpreted as targeting branch 'main'
@@ -293,7 +285,7 @@ async function handlePush(rawArgs, context = {}) {
       return { success: false, error: commitErr.message };
     }
   } else {
-    console.log(`${dim}[rapidfire-git] Working tree clean; no new staged changes to commit.${reset}`);
+    console.log(`${dim}[rapidfire-git] Working tree clean; no uncommitted changes found to commit.${reset}`);
   }
 
   // 6. Check for remote 'origin'
@@ -329,12 +321,32 @@ async function handlePush(rawArgs, context = {}) {
 
   // 7. Push to remote
   console.log(`${cyan}[rapidfire-git] Pushing to origin/${targetBranch}...${reset}`);
+
+  // Inspect remote branch existence and local unpushed commits before pushing
+  let remoteBranchExists = false;
+  try {
+    runCapture(`git rev-parse --verify "origin/${targetBranch}"`, { cwd });
+    remoteBranchExists = true;
+  } catch {}
+
+  let unpushedCommitsCount = 0;
+  if (remoteBranchExists) {
+    try {
+      const count = runCapture(`git rev-list --count "origin/${targetBranch}..HEAD"`, { cwd }).trim();
+      unpushedCommitsCount = parseInt(count, 10) || 0;
+    } catch {}
+  }
+
   try {
     run(`git push -u origin "${targetBranch}"`, { cwd });
     if (commitMade) {
       console.log(`\n${green}${bold}✔ Successfully committed and pushed to origin/${targetBranch}!${reset}\n`);
+    } else if (!remoteBranchExists) {
+      console.log(`\n${green}${bold}✔ Successfully pushed new branch to origin/${targetBranch}!${reset}\n`);
+    } else if (unpushedCommitsCount > 0) {
+      console.log(`\n${green}${bold}✔ Successfully pushed unpushed commits to origin/${targetBranch}!${reset}\n`);
     } else {
-      console.log(`\n${cyan}${bold}✔ origin/${targetBranch} is up to date (no new changes to push).${reset}\n`);
+      console.log(`\n${cyan}${bold}✔ origin/${targetBranch} is already up to date (no new changes to push).${reset}\n`);
     }
     return {
       success: true,

@@ -53,6 +53,24 @@ async function runTests() {
   assert.strictEqual(promptCount, 4, 'Prompt must fire automatically when long command finishes');
   assert.strictEqual(repl.isPassthroughRunning, false, 'isPassthroughRunning must be reset to false');
 
+  // Test 5: Command with mid-stream pause (e.g. npm publish upload delay) does NOT fire prompt mid-stream
+  console.log('[Test 5] Testing command with mid-stream pause to verify NO mid-stream prompt...');
+  const pauseCmd = isWin
+    ? 'Write-Host "Phase 1"; Start-Sleep -Milliseconds 700; Write-Host "Phase 2"'
+    : 'echo "Phase 1"; sleep 0.7; echo "Phase 2"';
+
+  await repl.handleLine(pauseCmd);
+
+  // Check at 400ms (during the 700ms pause)
+  await new Promise((r) => setTimeout(r, 400));
+  assert.strictEqual(promptCount, 4, 'Prompt must NOT fire during mid-stream pause');
+  assert.strictEqual(repl.isPassthroughRunning, true, 'isPassthroughRunning must stay true during pause');
+
+  // Wait for command completion
+  await new Promise((r) => setTimeout(r, 900));
+  assert.strictEqual(promptCount, 5, 'Prompt must fire exactly once after the command finishes');
+  assert.strictEqual(repl.isPassthroughRunning, false, 'isPassthroughRunning must reset to false');
+
   console.log('✓ All REPL prompt return test scenarios verified successfully!');
 
   repl.shutdown();
