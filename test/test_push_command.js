@@ -50,6 +50,22 @@ async function runTests() {
   assert.strictEqual(p6.branch, 'feature-123', 'Should parse -b flag');
   assert.strictEqual(p6.message, 'wip commit', 'Should parse -commit flag');
 
+  const p7 = parsePushArgs('git add . push -b branch3 -commit "test b flag"');
+  assert.strictEqual(p7.branch, 'branch3', 'Should parse -b branch3 correctly');
+
+  const p8 = parsePushArgs('git add . push -branch3 -commit "attached branch"');
+  assert.strictEqual(p8.branch, 'branch3', 'Should parse attached -branch3 correctly');
+
+  const p9 = parsePushArgs('git add . push -brach3 -commit "typo branch"');
+  assert.strictEqual(p9.branch, 'branch3', 'Should tolerate -brach3 typo as branch3');
+
+  const p10 = parsePushArgs('push -b feat -m "message with -b and -m"');
+  assert.strictEqual(p10.branch, 'feat', 'Should parse -b as branch');
+  assert.strictEqual(p10.message, 'message with -b and -m', 'Should parse -m as message');
+
+  const p11 = parsePushArgs('git add . push -m');
+  assert.strictEqual(p11.branch, 'main', 'Standalone -m should target main branch');
+
   console.log('✓ All syntax parsing combinations verified successfully.');
 
   // 2. Integration test with simulated local git remote

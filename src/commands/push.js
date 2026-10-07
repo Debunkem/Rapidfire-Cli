@@ -73,14 +73,28 @@ function parsePushArgs(input) {
     const token = postPush[i];
     const lower = token.toLowerCase();
 
-    // Branch flag: -b, -branch, --branch, -branchname, --branchname
-    if (lower === '-b' || lower === '-branch' || lower === '--branch' || lower === '-branchname' || lower === '--branchname') {
+    // Branch flag: -b, -branch, --branch, -brach (typo), -branchname, --branchname
+    if (
+      lower === '-b' ||
+      lower === '-branch' ||
+      lower === '--branch' ||
+      lower === '-brach' ||
+      lower === '--brach' ||
+      lower === '-branchname' ||
+      lower === '--branchname'
+    ) {
       if (i + 1 < postPush.length && !postPush[i + 1].startsWith('-')) {
         branch = postPush[i + 1];
         i += 2;
         continue;
       }
-    } else if (lower.startsWith('-b=') || lower.startsWith('-branch=') || lower.startsWith('--branch=')) {
+    } else if (
+      lower.startsWith('-b=') ||
+      lower.startsWith('-branch=') ||
+      lower.startsWith('--branch=') ||
+      lower.startsWith('-brach=') ||
+      lower.startsWith('--brach=')
+    ) {
       branch = token.split('=')[1];
       i++;
       continue;
@@ -96,6 +110,23 @@ function parsePushArgs(input) {
       // Handles e.g. -2nd branch or -main branch
       branch = token.replace(/^-+/, '');
       i += 2;
+      continue;
+    } else if (/^-+(?:branch|brach)(\d+)$/i.test(token)) {
+      // Attached digit branches: e.g. -branch3, -brach3 -> branch3
+      const num = token.match(/^-+(?:branch|brach)(\d+)$/i)[1];
+      branch = `branch${num}`;
+      i++;
+      continue;
+    } else if (/^-+b(\d+)$/i.test(token)) {
+      // Attached digit shorthand: e.g. -b3 -> branch3
+      const num = token.match(/^-+b(\d+)$/i)[1];
+      branch = `branch${num}`;
+      i++;
+      continue;
+    } else if (/^-+(?:branch|brach)[-_](.+)$/i.test(token)) {
+      // Attached hyphen/underscore branches: e.g. -branch-feature, -brach_v2
+      branch = token.match(/^-+(?:branch|brach)[-_](.+)$/i)[1];
+      i++;
       continue;
     } else if (lower === '-m') {
       // When -commit is also present, -m is interpreted as targeting branch 'main'

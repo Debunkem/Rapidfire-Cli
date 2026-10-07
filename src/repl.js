@@ -228,15 +228,6 @@ ${dim}Type 'help' for built-in recipes, or run any standard shell command.${rese
 
     // Send command with completion sentinel so REPL detects exactly when it finishes
     this.shell.write(`${line}; echo "${RAPIDFIRE_DONE_SENTINEL}"`);
-
-    // Safety fallback timer (20 seconds) in case an external command hangs without sentinel
-    this.idleTimer = setTimeout(() => {
-      if (this.isPassthroughRunning) {
-        this.isPassthroughRunning = false;
-        this.expectedEcho = null;
-        this.prompt();
-      }
-    }, 20000);
   }
 
   handleCdSync(line) {
