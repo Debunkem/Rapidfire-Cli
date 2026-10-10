@@ -186,6 +186,9 @@ ${dim}Type 'help' for built-in recipes, or run any standard shell command.${rese
     const line = rawLine.replace(/\x1b\[200~|\x1b\[201~/g, '').trim();
 
     if (!line) {
+      this.isPassthroughRunning = false;
+      this.expectedEcho = null;
+      if (this.idleTimer) clearTimeout(this.idleTimer);
       this.prompt();
       return;
     }
@@ -198,7 +201,7 @@ ${dim}Type 'help' for built-in recipes, or run any standard shell command.${rese
 
     if (matched) {
       try {
-        const result = await matched.run({ rl: this.rl });
+        const result = await matched.run({ rl: this.rl, repl: this });
         if (result && result.exit) {
           this.shutdown();
           return;

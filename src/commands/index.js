@@ -42,6 +42,73 @@ function matchCommand(line) {
     };
   }
 
+  if (cmd === 'clear' || cmd === 'cls') {
+    return {
+      name: 'clear',
+      run: async () => {
+        console.clear();
+      }
+    };
+  }
+
+  if (cmd === 'version' || cmd === '-v' || cmd === '--version') {
+    return {
+      name: 'version',
+      run: async () => {
+        try {
+          const pkg = require('../../package.json');
+          console.log(`RapidFire CLI v${pkg.version}`);
+        } catch {
+          console.log(`RapidFire CLI`);
+        }
+      }
+    };
+  }
+
+  if (cmd === 'rapidfire' || cmd === 'rapidfire-cli') {
+    if (tokens.length === 1) {
+      return {
+        name: 'rapidfire',
+        run: async (context) => {
+          if (context && context.repl && typeof context.repl.printBanner === 'function') {
+            context.repl.printBanner();
+          } else {
+            console.log(`\n\x1b[36m[rapidfire]\x1b[0m RapidFire REPL is active!`);
+            console.log(`To scaffold a project, use: \x1b[33msetup <recipe> <folder>\x1b[0m`);
+            console.log(`Type \x1b[36mhelp\x1b[0m to view all available commands or recipes.\n`);
+          }
+        }
+      };
+    }
+    const restTokens = tokens.slice(1);
+    const sub = restTokens[0].toLowerCase();
+    if (sub === '-v' || sub === '--version' || sub === 'version') {
+      return {
+        name: 'version',
+        run: async () => {
+          try {
+            const pkg = require('../../package.json');
+            console.log(`RapidFire CLI v${pkg.version}`);
+          } catch {
+            console.log(`RapidFire CLI`);
+          }
+        }
+      };
+    }
+    const remainingLine = trimmed.slice(tokens[0].length).trim();
+    const subMatched = matchCommand(remainingLine);
+    if (subMatched) {
+      return subMatched;
+    }
+    return {
+      name: 'rapidfire',
+      run: async () => {
+        console.log(`\n\x1b[33m[rapidfire] Unknown command: '${remainingLine}'.\x1b[0m`);
+        console.log(`Type \x1b[36mhelp\x1b[0m to view all available commands.\n`);
+      }
+    };
+  }
+
   if (cmd === 'exit' || cmd === 'quit') {
     return {
       name: 'exit',

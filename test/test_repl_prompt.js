@@ -71,6 +71,25 @@ async function runTests() {
   assert.strictEqual(promptCount, 5, 'Prompt must fire exactly once after the command finishes');
   assert.strictEqual(repl.isPassthroughRunning, false, 'isPassthroughRunning must reset to false');
 
+  // Test 6: Running rapidfire while active does not spawn nested shell and restores prompt immediately
+  console.log('[Test 6] Testing rapidfire command while active...');
+  await repl.handleLine('rapidfire');
+  assert.strictEqual(promptCount, 6, 'Prompt must return immediately after typing rapidfire');
+  assert.strictEqual(repl.isPassthroughRunning, false, 'isPassthroughRunning must be false after rapidfire command');
+
+  // Test 7: Running clear command clears and restores prompt immediately
+  console.log('[Test 7] Testing clear command prompt return...');
+  await repl.handleLine('clear');
+  assert.strictEqual(promptCount, 7, 'Prompt must return immediately after typing clear');
+  assert.strictEqual(repl.isPassthroughRunning, false, 'isPassthroughRunning must be false after clear command');
+
+  // Test 8: Empty line Enter resets passthrough state and calls prompt
+  console.log('[Test 8] Testing empty line Enter prompt recovery...');
+  repl.isPassthroughRunning = true;
+  await repl.handleLine('');
+  assert.strictEqual(promptCount, 8, 'Prompt must be called on empty line Enter');
+  assert.strictEqual(repl.isPassthroughRunning, false, 'isPassthroughRunning must be reset on empty line Enter');
+
   console.log('✓ All REPL prompt return test scenarios verified successfully!');
 
   repl.shutdown();
