@@ -2,7 +2,7 @@ const assert = require('assert');
 const path = require('path');
 const os = require('os');
 const fse = require('fs-extra');
-const { writeManifest, readManifest, hasManifest, MANIFEST_FILENAME } = require('../src/utils/manifest');
+const { writeManifest, readManifest, hasManifest, MANIFEST_FILENAME, CURRENT_VERSION } = require('../src/utils/manifest');
 
 console.log('--- TEST: MANIFEST LIFECYCLE ---');
 
@@ -24,7 +24,7 @@ try {
   assert.strictEqual(read.frontend, 'react');
   assert.strictEqual(read.backend, 'django');
   assert.strictEqual(read.folderName, 'my-test-app');
-  assert.strictEqual(read.rapidfireVersion, '0.1.0');
+  assert.strictEqual(read.rapidfireVersion, CURRENT_VERSION);
   assert(read.createdAt, 'Should contain createdAt timestamp');
 
   console.log('✓ .rapidfire.json creation and reading verified successfully.');

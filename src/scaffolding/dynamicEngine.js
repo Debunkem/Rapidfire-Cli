@@ -347,7 +347,7 @@ async function scaffoldDynamicFramework(projectPath, targetFolder, plan, context
     generationMode: 'dynamic',
     ecosystem: blueprint.ecosystem || 'node',
     createdAt: new Date().toISOString(),
-    rapidfireVersion: '0.1.21'
+    rapidfireVersion: require('../../package.json').version || '0.1.23'
   };
   fse.writeJsonSync(path.join(projectPath, '.rapidfire.json'), manifestData, { spaces: 2 });
 

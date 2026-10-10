@@ -20,10 +20,17 @@ async function runTests() {
   assert.strictEqual(promptCount, 1, 'Initial prompt should be displayed upon start');
   assert.strictEqual(repl.isPassthroughRunning, false, 'isPassthroughRunning should be false initially');
 
+  const waitForPrompt = async (target, timeout = 2500) => {
+    const start = Date.now();
+    while (promptCount < target && Date.now() - start < timeout) {
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  };
+
   // Test 2: Fast output command automatically restores prompt
   console.log('[Test 2] Testing prompt restoration after command with stdout...');
   await repl.handleLine('echo "RAPIDFIRE_TEST_STREAM"');
-  await new Promise((r) => setTimeout(r, 600));
+  await waitForPrompt(2);
 
   assert.strictEqual(promptCount, 2, 'Prompt must be called after command finishes');
   assert.strictEqual(repl.isPassthroughRunning, false, 'isPassthroughRunning must return to false');
@@ -31,7 +38,7 @@ async function runTests() {
   // Test 3: Silent command (like git add or mkdir) restores prompt
   console.log('[Test 3] Testing prompt restoration after silent command (no stdout)...');
   await repl.handleLine('echo -n ""');
-  await new Promise((r) => setTimeout(r, 600));
+  await waitForPrompt(3);
 
   assert.strictEqual(promptCount, 3, 'Prompt must be called even when command has zero stdout');
   assert.strictEqual(repl.isPassthroughRunning, false, 'isPassthroughRunning must return to false for silent command');

@@ -2,7 +2,10 @@ const path = require('path');
 const fse = require('fs-extra');
 
 const MANIFEST_FILENAME = '.rapidfire.json';
-const CURRENT_VERSION = '0.1.0';
+let CURRENT_VERSION = '0.1.23';
+try {
+  CURRENT_VERSION = require('../../package.json').version;
+} catch {}
 
 /**
  * Creates and writes a .rapidfire.json manifest in the project root
