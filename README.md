@@ -3,8 +3,8 @@
 [![npm version](https://img.shields.io/npm/v/rapidfire-cli.svg?style=flat-square&color=007acc)](https://www.npmjs.com/package/rapidfire-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-339933.svg?style=flat-square&logo=nodedotjs)](https://nodejs.org)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg?style=flat-square)](https://github.com/Debunkem/rapidfire-cli)
-[![Pricing](https://img.shields.io/badge/Cost-%240.00%20(100%25%20Free)-success.svg?style=flat-square)](https://github.com/Debunkem/rapidfire-cli)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg?style=flat-square)](https://github.com/VsrCube/Rapidfire-Cli)
+[![Pricing](https://img.shields.io/badge/Cost-%240.00%20(100%25%20Free)-success.svg?style=flat-square)](https://github.com/VsrCube/Rapidfire-Cli)
 
 **The Developer Terminal Overlay & Full-Stack Scaffolding Workspace**
 
@@ -72,16 +72,124 @@ RapidFire is **not** an isolated sandbox. It wraps your native shell (`powershel
 
 ## Architecture & Value Proposition
 
-RapidFire executes 100% locally on your computer with zero telemetry and zero cloud dependencies.
+RapidFire executes 100% locally on your computer with zero telemetry and zero cloud dependencies. It orchestrates native PTY terminal execution, 3-tier scaffolding, local secret detection, and unified Git workflows.
+
+### System Architecture & Subsystem Diagram
+
+```mermaid
+graph TD
+    User["Developer in Terminal"] --> REPL["Terminal Overlay REPL (src/repl.js)"]
+    
+    subgraph Core ["RapidFire Terminal Overlay Layer"]
+        REPL --> PTY["PTY Bridge (node-pty)<br/>Raw ANSI stream &lt;2ms<br/>SIGWINCH Resize Handling"]
+        REPL --> Lexer["Command Lexer & Dispatcher (src/commands/index.js)"]
+        REPL --> SynHL["Real-time Syntax Highlighter & Autocompletion"]
+        REPL --> Hist["Bidirectional Shell History Sync"]
+    end
+    
+    PTY --> OS["Host Operating System Shell<br/>(bash / zsh / powershell / cmd)"]
+    
+    Lexer -->|setup| ScaffoldingEngine["3-Tier Scaffolding Engine (src/commands/setup.js)"]
+    Lexer -->|push| GitEngine["Unified Git & Security Engine (src/commands/push.js)"]
+    Lexer -->|ask / suggest / tell / explain| AIEngine["Multi-Provider AI Engine (src/ai/provider.js)"]
+    Lexer -->|preset| PresetEngine["Smart Presets & Manifests (src/commands/preset.js)"]
+    Lexer -->|deploy| DeployEngine["Vercel Cloud Deployments (src/commands/deploy.js)"]
+
+    subgraph Scaffolding ["3-Tier Scaffolding Subsystem"]
+        ScaffoldingEngine --> StackPlanner["Stack Planner (planner.js)"]
+        StackPlanner -->|Tier 1: Predefined| Predefined["13 Predefined Stacks (Offline Templates)"]
+        StackPlanner -->|Tier 2: Composed| Composed["Arbitrary Pairings (e.g. svelte+fastapi)"]
+        StackPlanner -->|Tier 3: Dynamic| DynamicEngine["Dynamic AI Engine (dynamicEngine.js)"]
+        DynamicEngine --> SchemaValidator["Schema-Validated Blueprint Generation"]
+        DynamicEngine --> PathSanitizer["Path Traversal Sanitizer & Preview Gate"]
+    end
+
+    subgraph GitSubsystem ["Intelligent Git Lifecycle Subsystem"]
+        ScaffoldingEngine --> ParentCheck{"Inside Parent Git Repo?<br/>(getParentGitRepo)"}
+        ParentCheck -->|Yes| SkipNested["Skip Nested .git Init<br/>(Prevents Broken Submodules)"]
+        ParentCheck -->|No| PromptLocal{"Prompt: Init Local Git?<br/>(Y/N)"}
+        PromptLocal -->|Yes| InitGit["git init -b main<br/>+ Gitleaks Pre-Push Hook"]
+        PromptLocal -->|No| SkipLocal["Skip Git (Zero .git created)"]
+        
+        InitGit --> GhPrompt{"Prompt: Create Remote GitHub?<br/>(Y/N)"}
+        GhPrompt -->|Yes| GhCreate["gh repo create --source=. --push"]
+        GhPrompt -->|No| SkipGh["Skip Remote Creation"]
+
+        GitEngine --> PushGitCheck{"Inside Git Repo?"}
+        PushGitCheck -->|No| PushPrompt{"Prompt: Init Git Now?<br/>(Y/N)"}
+        PushPrompt -->|No| AbortPush["Abort Push Cleanly"]
+        PushPrompt -->|Yes| InitGitPush["git init -b main & Hook"]
+        PushGitCheck -->|Yes| GitleaksScan["Gitleaks In-Flight Secret Scan"]
+        InitGitPush --> GitleaksScan
+        GitleaksScan -->|Leak Detected| BlockPush["BLOCK PUSH IN-FLIGHT"]
+        GitleaksScan -->|Clean| StageAndPush["Stage (git add .) -> Commit -> Push to Origin"]
+    end
+
+    subgraph SecuritySubsystem ["DevSecOps Security Guardrails"]
+        GitleaksScan
+        PathSanitizer
+        DepAudit["Interactive Package Injection Guard"]
+        PrereqCheck["Runtime Pre-flight LTS & Tool Checker"]
+    end
+```
+
+### End-to-End System Data Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Dev as Developer
+    participant REPL as RapidFire REPL
+    participant Router as Command Router
+    participant Engine as Scaffolding / Git Engine
+    participant Security as Gitleaks & Security Layer
+    participant Host as OS Shell / Git / Cloud
+
+    Dev->>REPL: Types command (e.g. setup, push, ask)
+    REPL->>Router: Parse tokens and match verb
+    alt Host Shell Command (e.g. ls, git, docker)
+        Router->>Host: Stream to node-pty (<2ms latency)
+        Host-->>Dev: Raw ANSI output stream
+    else Scaffolding Command (setup <stack> <folder>)
+        Router->>Engine: planStack(stack) -> Tier 1, 2, or 3
+        Engine->>Host: Detect parent Git repository
+        alt Inside Parent Git Repo
+            Engine-->>Dev: [rapidfire] Detected parent repo. Skipping nested git init.
+        else Outside Git Repo
+            Engine->>Dev: Prompt: Initialize local Git repository? (Y/N)
+        end
+        Engine->>Host: Write scaffolded files, .rapidfire.json, .gitignore
+        Engine->>Security: Install Gitleaks pre-push hook (.git/hooks/pre-push)
+        Engine-->>Dev: Green project ready banner & next steps
+    else Unified Push Command (push -m "msg")
+        Router->>Engine: parsePushArgs()
+        Engine->>Host: Check if inside Git worktree
+        alt Not in Git Repo
+            Engine->>Dev: Prompt: Initialize new Git repository now? (Y/N)
+            alt User enters 'n'
+                Engine-->>Dev: Abort: working directory is not a Git repository.
+            else User enters 'y'
+                Engine->>Host: git init -b main & install hook
+            end
+        end
+        Engine->>Security: In-flight local Gitleaks scan
+        alt Secret Detected
+            Security-->>Dev: PUSH BLOCKED: Secret / API Key Detected!
+        else Clean
+            Engine->>Host: git add . && git commit -m "msg" && git push
+            Host-->>Dev: Successfully pushed to origin/branch!
+        end
+    end
+```
 
 ```
 +------------------------------------------------------------------------------+
 |                           RAPIDFIRE DEVELOPER SHELL                          |
 +-------------------------------+----------------------------------------------+
-| Full-Stack Scaffolder         | Pluggable AI Assistant                       |
-|  * 13 Connected Stack Recipes |  * ask: Multi-turn Q&A + 1-Click Installer   |
-|  * Bundled 100% Offline       |  * suggest: Interactive (Y/N) Stack Planner  |
-|  * Pinned Official LTS Stacks |  * tell: Multi-file Generation with Preview  |
+| 3-Tier Dynamic Scaffolder     | Pluggable AI Assistant                       |
+|  * 13 Built-in Stack Recipes  |  * ask: Multi-turn Q&A + 1-Click Installer   |
+|  * Composed Arbitrary Pairs   |  * suggest: Interactive (Y/N) Stack Planner  |
+|  * Dynamic AI Blueprinting    |  * tell: Multi-file Generation with Preview  |
 |  * Proactive Runtime Checks   |  * explain: Codebase & File Architecture     |
 |  * Auto Python venv Prompt    |  * Persistent Local Key Storage (0600)       |
 +-------------------------------+----------------------------------------------+
@@ -167,10 +275,10 @@ npm install -g rapidfire-cli@latest
 ### Local Developer Clone
 If you are developing or contributing to the RapidFire codebase:
 ```bash
-git clone https://github.com/Debunkem/rapidfire-cli.git
-cd rapidfire-cli
+git clone https://github.com/VsrCube/Rapidfire-Cli.git
+cd Rapidfire-Cli
 npm install
-npm test      # Runs all 24 automated test suites
+npm test      # Runs all 26 automated test suites
 npm start     # Starts local REPL
 ```
 
@@ -281,11 +389,27 @@ RapidFire is built with defensive engineering principles across **5 security pil
 
 ---
 
-## Scaffolding Recipes & LTS Stack
+## Scaffolding Recipes & The 3-Tier Dynamic Engine
 
-All templates are bundled locally inside the package distribution—scaffolding takes **seconds** and requires **zero git clones**.
+RapidFire does not limit developers to static templates. Its scaffolding subsystem operates across **three progressive tiers**:
 
-### Full-Stack Connected Recipes
+```
+[setup <stack> <folder>]
+         |
+         +--> Tier 1: Built-in Predefined Recipes (13 exact matches)
+         |            • Instant, offline, embedded fallbacks
+         |
+         +--> Tier 2: Dynamic Composed Pairings (e.g. svelte+fastapi, vue+flask)
+         |            • Combines modular frontend & backend adapters
+         |            • Wires CORS, ports, and manifests automatically
+         |
+         +--> Tier 3: Dynamic Unknown Frameworks (e.g. hono, astro, solid, nextjs, nestjs)
+                      • Generates structured blueprint via AI / ecosystem starters
+                      • Displays terminal file preview & requires explicit [Y/N] approval
+                      • Injects .rapidfire.json (generationMode: "dynamic") + Gitleaks
+```
+
+### Full-Stack Connected Recipes (Tier 1 & 2)
 | Recipe Command | Frontend | Backend | Features |
 |---|---|---|---|
 | `setup react+fastapi <dir>` | React 18 LTS (Vite) | Python FastAPI | Connected CORS, auto Swagger docs (`/docs`) |
@@ -296,15 +420,17 @@ All templates are bundled locally inside the package distribution—scaffolding 
 | `setup vue+django <dir>` | Vue 3 LTS (Vite) | Django LTS REST | Vue 3 SPA + Django REST framework |
 | `setup react+flask <dir>` | React 18 LTS (Vite) | Python Flask | Lightweight Python REST endpoints |
 | `setup svelte+node <dir>` | Svelte (Vite) | Express 4 LTS | High-performance reactive UI + Express API |
+| `setup <fe>+<be> <dir>` | Any Frontend | Any Backend | Arbitrary pairing (e.g., `setup svelte+fastapi myapp`) |
 
-### Standalone Frontend & Backend Recipes
-| Recipe Command | Framework | Version / Details |
+### Standalone & Dynamic Frameworks (Tier 1 & 3)
+| Recipe Command | Framework | Details |
 |---|---|---|
 | `setup react <dir>` | React (Vite) | React 18 LTS (`^18.3.1`) |
 | `setup vue <dir>` | Vue 3 (Vite) | Vue 3 LTS (`^3.5.0`) |
 | `setup svelte <dir>` | Svelte (Vite) | Modern Vite Svelte SPA |
 | `setup fastapi <dir>` | FastAPI | `fastapi>=0.115.0`, `uvicorn>=0.32.0` |
 | `setup django <dir>` | Django | Official Django LTS (`Django>=4.2,<6.0`) |
+| `setup <unknown> <dir>` | Custom / Unknown | Dynamic AI blueprinting (e.g., `hono`, `astro`, `solid`, `nextjs`) |
 
 ### Automated Python Virtual Environment Setup
 When scaffolding any Python stack (FastAPI, Django, Flask), RapidFire asks:
@@ -375,6 +501,14 @@ git add <files> push [-b <branch>|-m] -commit "<message>"
 * **Automatic Rebase Recovery**: If remote `origin` has newer commits (non-fast-forward rejection), RapidFire automatically syncs via `git pull --rebase` and retries the push.
 * **Automatic GitHub Repo Provisioning**: If the local repository lacks a configured remote origin, RapidFire proactively detects your `gh` CLI credentials, prompts to create the GitHub repository, and sets the upstream tracking branch automatically.
 
+### Intelligent Git Lifecycle & Nested Git Prevention
+
+RapidFire solves the classic nested repository dilemma that occurs when developers scaffold multiple projects or submodules (like creating `frontend/` and `backend/` independently):
+
+* **Nested Git Guard**: Inspects parent directory hierarchies before `git init`. If an existing Git repository is detected, RapidFire skips creating nested `.git` folders so the parent repository tracks the files cleanly without submodule corruption.
+* **On-Demand Local Git Initialization**: Standalone projects outside any repository prompt: `Do you want to initialize a local Git repository for '<folder>'? (Y/N): `. Declining leaves the folder completely clean without `.git`.
+* **On-Demand Push Initialization**: Executing `push` in a non-git directory prompts for confirmation before initializing `main` and installing security hooks; if declined, the push aborts safely.
+
 ### Command Examples
 ```bash
 # Push directly to main from any branch
@@ -421,7 +555,9 @@ RapidFire seamlessly synchronizes command history across your host operating sys
 | Command | Category | Description |
 |---|---|---|
 | `help` | General | Display the interactive command manual |
-| `init` / `setup <recipe> <folder>` | Scaffolding | Scaffold any of the 13 full-stack projects or initialize RapidFire |
+| `init` / `setup <recipe> <folder>` | Scaffolding | Scaffold any of the 13 built-in full-stack projects or initialize RapidFire |
+| `setup <fe>+<be> <folder>` | Dynamic Scaffolding | Dynamically compose unlisted pairings (e.g. `setup svelte+fastapi myapp`) |
+| `setup <unknown> <folder>` | AI Scaffolding | Dynamically scaffold unknown frameworks (e.g. `hono`, `astro`, `solid`, `nextjs`) |
 | `explain [path]` | AI Analysis | Explains codebase architecture, folder tree, or source file role |
 | `ask <question>` | AI Companion | Technical Q&A with conversational memory & 1-click package installer |
 | `ask clear` | AI Companion | Clear conversation context memory |
@@ -443,7 +579,7 @@ RapidFire seamlessly synchronizes command history across your host operating sys
 
 ## Testing & Verification
 
-RapidFire maintains a rigorous automated testing suite covering all 13 framework recipes, shell passthrough, AI fallbacks, cross-platform paths, prompt restoration, and security scanners:
+RapidFire maintains a rigorous automated testing suite covering all 13 framework recipes, shell passthrough, AI fallbacks, cross-platform paths, prompt restoration, nested git prevention, and security scanners:
 
 ```bash
 npm test
@@ -451,13 +587,13 @@ npm test
 
 ```text
 ======================================================
-Summary: 24 passed, 0 failed (24 total)
+Summary: 26 passed, 0 failed (26 total)
 ======================================================
-ALL 24 TEST SUITES PASSED FLAWLESSLY!
+ALL 26 TEST SUITES PASSED FLAWLESSLY!
 ```
 
 ---
 
 ## License
 
-MIT (c) Vedansh Shrivastava ([@Debunkem](https://github.com/Debunkem))
+MIT (c) Vedansh Shrivastava ([@VsrCube](https://github.com/VsrCube))

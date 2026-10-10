@@ -6,6 +6,9 @@ const { writeManifest } = require('../utils/manifest');
 const { installPrePushHook } = require('../integrations/gitleaks');
 const { isGhInstalled, isGhAuthenticated, createRepo } = require('../integrations/gh');
 const { isVercelInstalled } = require('../integrations/vercel');
+const { planStack } = require('../scaffolding/planner');
+const { scaffoldDynamicFramework } = require('../scaffolding/dynamicEngine');
+const { getParentGitRepo, promptConfirmation } = require('../utils/gitContext');
 
 // --- FRONTEND TEMPLATES ---
 
@@ -274,18 +277,55 @@ if __name__ == '__main__':
   fse.writeFileSync(path.join(backendDir, 'requirements.txt'), `flask>=3.1.0\nflask-cors>=5.0.0\n`, 'utf8');
 }
 
-function initGitAndHooks(projectPath) {
+async function initGitAndHooks(projectPath, targetFolder, context = {}) {
   try {
-    if (!fse.existsSync(path.join(projectPath, '.git'))) {
-      run('git init', { cwd: projectPath, stdio: 'ignore' });
-      console.log('[rapidfire] Initialized local git repository.');
+    // 1. Check if target directory is nested inside an existing parent Git repository
+    const parentRepo = getParentGitRepo(projectPath);
+    if (parentRepo) {
+      console.log(`\x1b[33m[rapidfire] Detected parent Git repository at '${parentRepo}'. Skipping nested git init.\x1b[0m`);
+      try {
+        installPrePushHook(parentRepo);
+      } catch {}
+      return { initialized: false, isNested: true, parentRepo };
     }
-    const hookResult = installPrePushHook(projectPath);
-    if (hookResult.success) {
-      console.log('\x1b[32m[rapidfire-security] Installed gitleaks pre-push hook in .git/hooks/pre-push\x1b[0m');
+
+    // 2. If it already has a local .git directory, just ensure security hooks are installed
+    if (fse.existsSync(path.join(projectPath, '.git'))) {
+      const hookResult = installPrePushHook(projectPath);
+      if (hookResult.success) {
+        console.log('\x1b[32m[rapidfire-security] Installed gitleaks pre-push hook in .git/hooks/pre-push\x1b[0m');
+      }
+      return { initialized: true, isNested: false };
+    }
+
+    // 3. Standalone project outside Git: ask user if they want to initialize a local Git repository
+    const folderName = targetFolder || path.basename(projectPath);
+    const gitPrompt = `\nDo you want to initialize a local Git repository for '${folderName}'? (Y/N): `;
+
+    // Interactive users default to 'n' unless confirmed; non-interactive headless default can use RAPIDFIRE_AUTO_GIT
+    const isInteractive = Boolean(context && (typeof context.ask === 'function' || context.rl));
+    const defaultChoice = isInteractive ? 'n' : (process.env.RAPIDFIRE_AUTO_GIT === '0' ? 'n' : 'y');
+    const shouldInit = await promptConfirmation(context, gitPrompt, defaultChoice);
+
+    if (shouldInit) {
+      try {
+        run('git init -b main', { cwd: projectPath, stdio: 'ignore' });
+      } catch {
+        run('git init', { cwd: projectPath, stdio: 'ignore' });
+      }
+      console.log('[rapidfire] Initialized local git repository.');
+      const hookResult = installPrePushHook(projectPath);
+      if (hookResult.success) {
+        console.log('\x1b[32m[rapidfire-security] Installed gitleaks pre-push hook in .git/hooks/pre-push\x1b[0m');
+      }
+      return { initialized: true, isNested: false };
+    } else {
+      console.log('[rapidfire] Skipped local git initialization.');
+      return { initialized: false, isNested: false };
     }
   } catch (err) {
     console.warn('[rapidfire] Git initialization notice:', err.message);
+    return { initialized: false, error: err.message };
   }
 }
 
@@ -324,6 +364,8 @@ async function maybePromptForVenv(pythonDir, context) {
 
 async function maybePromptForGithubRepo(projectPath, targetFolder, context) {
   if (!projectPath || !fse.existsSync(projectPath)) return;
+  // If no local Git repository exists, skip remote GitHub repository creation
+  if (!fse.existsSync(path.join(projectPath, '.git'))) return;
   if (!isGhInstalled()) return;
 
   const promptText = `\nDo you want to create a remote GitHub repository for '${targetFolder}'? (Y/N): `;
@@ -382,19 +424,27 @@ async function handleSetup(args, context = {}) {
     console.log('Standalone backends:');
     console.log('  • setup fastapi <folder>        (Standalone FastAPI)');
     console.log('  • setup django <folder>         (Standalone Django)');
+    console.log('Dynamic & custom framework scaffolding:');
+    console.log('  • setup <unknown> <folder>      (Dynamic AI scaffolding: e.g. astro, solid, nextjs, nestjs)');
+    console.log('  • setup <fe>+<be> <folder>      (Composed arbitrary pairings: e.g. svelte+fastapi, vue+flask)');
+    console.log('  • setup <stack> <folder> --dynamic (Non-interactive dynamic scaffolding)');
     return;
   }
 
-  // Pre-flight check for required tools (Node.js, npm, Python, Django)
-  const requiresNode = stack.includes('react') || stack.includes('vue') || stack.includes('svelte') || stack.includes('node');
-  const requiresPython = stack.includes('fastapi') || stack.includes('django') || stack.includes('flask');
-  const requiresDjango = stack.includes('django');
+  const plan = planStack(stack);
 
-  const prereqCheck = checkPrerequisites({ requiresNode, requiresPython, requiresDjango });
-  if (!prereqCheck.ok) {
-    console.error(`\n\x1b[31m[rapidfire] Missing required prerequisites to scaffold '${stack}':\x1b[0m ${prereqCheck.missing.join(', ')}`);
-    console.log(`\n\x1b[1mInstallation instructions for your system:\x1b[0m\n${prereqCheck.instructions}\n`);
-    return { success: false, missing: prereqCheck.missing };
+  // Pre-flight check for required tools on known stacks (Node.js, npm, Python, Django)
+  if (plan.tier === 'PREDEFINED' || plan.tier === 'COMPOSED') {
+    const requiresNode = stack.includes('react') || stack.includes('vue') || stack.includes('svelte') || stack.includes('node');
+    const requiresPython = stack.includes('fastapi') || stack.includes('django') || stack.includes('flask');
+    const requiresDjango = stack.includes('django');
+
+    const prereqCheck = checkPrerequisites({ requiresNode, requiresPython, requiresDjango });
+    if (!prereqCheck.ok) {
+      console.error(`\n\x1b[31m[rapidfire] Missing required prerequisites to scaffold '${stack}':\x1b[0m ${prereqCheck.missing.join(', ')}`);
+      console.log(`\n\x1b[1mInstallation instructions for your system:\x1b[0m\n${prereqCheck.instructions}\n`);
+      return { success: false, missing: prereqCheck.missing };
+    }
   }
 
   const projectPath = path.resolve(process.cwd(), targetFolder);
@@ -402,6 +452,46 @@ async function handleSetup(args, context = {}) {
   if (fse.existsSync(projectPath) && !isDirEmpty(projectPath)) {
     console.error(`\x1b[31m[rapidfire] Error: Target directory '${targetFolder}' already exists and is not empty.\x1b[0m`);
     return;
+  }
+
+  // Tier 2: Dynamic Composed Pairings (e.g. svelte+fastapi, vue+flask)
+  if (plan.tier === 'COMPOSED') {
+    console.log(`[rapidfire] Composing multi-framework stack: ${plan.frontend} (frontend) + ${plan.backend} (backend)...`);
+    await setupFullstack(projectPath, targetFolder, plan.frontend, plan.backend, context);
+    return;
+  }
+
+  // Tier 3: Unknown Frameworks or Custom Stacks (e.g. astro, solid, nextjs, nestjs)
+  if (plan.tier === 'DYNAMIC') {
+    const hasDynamicFlag = args.some(
+      (a) => a.toLowerCase() === '--dynamic' || a.toLowerCase() === '--resolve' || a.toLowerCase() === 'dynamic'
+    );
+    const autoDynamic = Boolean(process.env.RAPIDFIRE_AUTO_DYNAMIC === '1' || hasDynamicFlag);
+
+    let proceed = false;
+    if (autoDynamic) {
+      proceed = true;
+    } else {
+      const promptText = `\n\x1b[33m[rapidfire] Recipe '${stack}' is not in the predefined catalogue.\x1b[0m\nWould you like to dynamically scaffold this project now? (Y/N): `;
+      if (context && typeof context.ask === 'function') {
+        const ans = await context.ask(promptText);
+        proceed = Boolean(ans && ans.trim().toLowerCase().startsWith('y'));
+      } else if (context && context.rl) {
+        proceed = await new Promise((resolve) => {
+          context.rl.question(promptText, (ans) => {
+            resolve(Boolean(ans && ans.trim().toLowerCase().startsWith('y')));
+          });
+        });
+      }
+    }
+
+    if (proceed) {
+      return await scaffoldDynamicFramework(projectPath, targetFolder, plan, context);
+    } else {
+      console.error(`\x1b[31m[rapidfire] Unknown recipe '${stack}'.\x1b[0m`);
+      console.log('Type "help" to see all supported framework recipes.');
+      return;
+    }
   }
 
   switch (stack) {
@@ -497,8 +587,14 @@ cd backend
 \`\`\`
 `, 'utf8');
 
-  writeManifest(projectPath, { frontend, backend, folderName: targetFolder });
-  initGitAndHooks(projectPath);
+  const isPredefined = ['react+fastapi', 'react+django', 'react+node', 'vue+fastapi', 'vue+node', 'vue+django', 'react+flask', 'svelte+node'].includes(`${frontend}+${backend}`);
+  writeManifest(projectPath, {
+    frontend,
+    backend,
+    folderName: targetFolder,
+    generationMode: isPredefined ? 'predefined' : 'composed'
+  });
+  await initGitAndHooks(projectPath, targetFolder, context);
 
   if (['fastapi', 'django', 'flask'].includes(backend) && context && (context.ask || context.rl || process.env.RAPIDFIRE_AUTO_VENV)) {
     await maybePromptForVenv(backendDir, context);
@@ -517,7 +613,7 @@ async function setupStandaloneFastAPI(projectPath, targetFolder, context = {}) {
   writeFastAPIBackend(projectPath, targetFolder);
   fse.writeFileSync(path.join(projectPath, '.gitignore'), `__pycache__/\n*.pyc\nvenv/\n.venv/\n.env\n`, 'utf8');
   writeManifest(projectPath, { frontend: null, backend: 'fastapi', folderName: targetFolder });
-  initGitAndHooks(projectPath);
+  await initGitAndHooks(projectPath, targetFolder, context);
 
   if (context && (context.ask || context.rl || process.env.RAPIDFIRE_AUTO_VENV)) {
     await maybePromptForVenv(projectPath, context);
@@ -542,7 +638,7 @@ async function setupStandaloneDjango(projectPath, targetFolder, context = {}) {
   fse.writeFileSync(path.join(projectPath, 'requirements.txt'), `asgiref>=3.8.1\nDjango>=4.2,<6.0\nsqlparse>=0.5.0\n`, 'utf8');
   fse.writeFileSync(path.join(projectPath, '.gitignore'), `__pycache__/\n*.pyc\nvenv/\n.venv/\ndb.sqlite3\n.env\n`, 'utf8');
   writeManifest(projectPath, { frontend: null, backend: 'django', folderName: targetFolder });
-  initGitAndHooks(projectPath);
+  await initGitAndHooks(projectPath, targetFolder, context);
 
   if (context && (context.ask || context.rl || process.env.RAPIDFIRE_AUTO_VENV)) {
     await maybePromptForVenv(projectPath, context);
@@ -568,7 +664,7 @@ async function setupStandaloneFrontend(projectPath, targetFolder, frontend, cont
   else if (frontend === 'svelte') scaffoldViteSvelte(projectPath);
 
   writeManifest(projectPath, { frontend, backend: null, folderName: targetFolder });
-  initGitAndHooks(projectPath);
+  await initGitAndHooks(projectPath, targetFolder, context);
 
   if (context && (context.ask || context.rl || process.env.RAPIDFIRE_AUTO_GH)) {
     await maybePromptForGithubRepo(projectPath, targetFolder, context);

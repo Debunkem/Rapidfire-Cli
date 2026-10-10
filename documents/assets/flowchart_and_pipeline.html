@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RapidFire CLI - Monochromatic Architectural Flowchart &amp; Decomposed Pipeline</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      max-width: 1400px;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    .header p {
+      color: #475569;
+      font-size: 14px;
+    }
+    .svg-container {
+      width: 100%;
+      max-width: 1700px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      overflow: hidden;
+      padding: 16px;
+    }
+    .svg-container svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .footer {
+      margin-top: 24px;
+      font-size: 12.5px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>RAPIDFIRE CLI: MONOCHROMATIC ARCHITECTURAL FLOWCHART</h1>
+    <p>Official Academic Specification • Decomposed Stages (Input &rarr; Router &rarr; 4 Pipelines &rarr; Unified Output) • Monochromatic Publication Layout</p>
+  </div>
+  <div class="svg-container">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1180" width="1920" height="1180" style="background:#ffffff; font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    
+    <marker id="arr-black" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#0f172a" />
+    </marker>
+    <marker id="arr-gray" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b" />
+    </marker>
+  </defs>
+
+  
+  <rect x="15" y="15" width="1890" height="1150" rx="4" fill="#ffffff" stroke="#0f172a" stroke-width="2" />
+
+  
+  <rect x="15" y="15" width="1890" height="65" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+  <text x="40" y="45" font-size="20" font-weight="bold" fill="#0f172a">RAPIDFIRE CLI: SYSTEM ARCHITECTURE &amp; DECOMPOSED DATA FLOW PIPELINE</text>
+  <text x="40" y="65" font-size="12" font-style="italic" fill="#475569">Formal Academic Specification • Monochromatic Publication Layout for IEEE/Institutional Documentation</text>
+  <text x="1875" y="52" font-size="12" font-weight="600" fill="#334155" text-anchor="end">Greater Noida Institute of Technology • AKTU Lucknow</text>
+
+  
+  
+  
+  <g>
+    
+    <rect x="35" y="100" width="270" height="1040" rx="4" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+    <rect x="35" y="100" width="270" height="38" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5" />
+    <text x="170" y="125" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">STAGE 1: TERMINAL &amp; INPUT</text>
+
+    
+    <rect x="50" y="155" width="240" height="145" rx="3" fill="#f8fafc" stroke="#475569" stroke-width="1" />
+    <rect x="50" y="155" width="240" height="26" fill="#f1f5f9" stroke="#475569" stroke-width="1" />
+    <text x="60" y="173" font-size="11" font-weight="bold" fill="#0f172a">1.1 Terminal Session Launch</text>
+    <text x="60" y="200" font-size="10.5" fill="#334155">• Invocation: <tspan font-family="monospace" font-weight="bold">rapidfire</tspan></text>
+    <text x="60" y="220" font-size="10.5" fill="#334155">• Raw Terminal Mode: <tspan font-family="monospace">stdin</tspan></text>
+    <text x="60" y="240" font-size="10.5" fill="#334155">• Fullscreen REPL Viewport</text>
+    <text x="60" y="260" font-size="10.5" fill="#334155">• ANSI Escape Code Interceptor</text>
+    <text x="60" y="280" font-size="10" font-style="italic" fill="#64748b">Zero-configuration startup</text>
+
+    
+    <rect x="50" y="315" width="240" height="155" rx="3" fill="#f8fafc" stroke="#475569" stroke-width="1" />
+    <rect x="50" y="315" width="240" height="26" fill="#f1f5f9" stroke="#475569" stroke-width="1" />
+    <text x="60" y="333" font-size="11" font-weight="bold" fill="#0f172a">1.2 In-Flight Key Listener</text>
+    <text x="60" y="358" font-size="10.5" fill="#334155">• <tspan font-weight="bold">[?]</tspan> : Instant Contextual Help</text>
+    <text x="60" y="378" font-size="10.5" fill="#334155">• <tspan font-weight="bold">[!]</tspan> : Shell Escape Mode</text>
+    <text x="60" y="398" font-size="10.5" fill="#334155">• <tspan font-weight="bold">[ESC]</tspan> : Cancel Active Operation</text>
+    <text x="60" y="418" font-size="10.5" fill="#334155">• <tspan font-weight="bold">[TAB]</tspan> : Autocomplete Stacks</text>
+    <text x="60" y="438" font-size="10.5" fill="#334155">• <tspan font-weight="bold">[↑ / ↓]</tspan> : Persistent History Search</text>
+    <text x="60" y="458" font-size="9.5" font-family="monospace" fill="#0f172a">~/.rapidfire/history.log</text>
+
+    
+    <rect x="50" y="485" width="240" height="310" rx="3" fill="#f8fafc" stroke="#475569" stroke-width="1" />
+    <rect x="50" y="485" width="240" height="26" fill="#f1f5f9" stroke="#475569" stroke-width="1" />
+    <text x="60" y="503" font-size="11" font-weight="bold" fill="#0f172a">1.3 Host Shell Subsystems</text>
+    
+    
+    <rect x="60" y="522" width="220" height="58" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <rect x="68" y="534" width="28" height="28" rx="2" fill="#0f172a" />
+    <text x="82" y="553" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">&gt;_</text>
+    <text x="105" y="542" font-size="11" font-weight="bold" fill="#0f172a">GNU Bash Shell</text>
+    <text x="105" y="557" font-size="9.5" fill="#475569">Target: Linux / Unix POSIX</text>
+    <text x="105" y="570" font-size="9" font-family="monospace" fill="#64748b">/bin/bash</text>
+
+    
+    <rect x="60" y="588" width="220" height="58" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <rect x="68" y="600" width="28" height="28" rx="2" fill="#334155" />
+    <text x="82" y="619" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">Z</text>
+    <text x="105" y="608" font-size="11" font-weight="bold" fill="#0f172a">Z Shell (Zsh)</text>
+    <text x="105" y="623" font-size="9.5" fill="#475569">Target: macOS Darwin standard</text>
+    <text x="105" y="636" font-size="9" font-family="monospace" fill="#64748b">/bin/zsh</text>
+
+    
+    <rect x="60" y="654" width="220" height="58" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <rect x="68" y="666" width="28" height="28" rx="2" fill="#475569" />
+    <text x="82" y="685" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">&gt;</text>
+    <text x="105" y="674" font-size="11" font-weight="bold" fill="#0f172a">PowerShell Core</text>
+    <text x="105" y="689" font-size="9.5" fill="#475569">Target: Windows 10/11</text>
+    <text x="105" y="702" font-size="9" font-family="monospace" fill="#64748b">powershell.exe</text>
+
+    
+    <rect x="60" y="720" width="220" height="58" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <rect x="68" y="732" width="28" height="28" rx="2" fill="#64748b" />
+    <text x="82" y="750" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">CMD</text>
+    <text x="105" y="740" font-size="11" font-weight="bold" fill="#0f172a">Windows Command Prompt</text>
+    <text x="105" y="755" font-size="9.5" fill="#475569">Legacy fallback runtime</text>
+    <text x="105" y="768" font-size="9" font-family="monospace" fill="#64748b">cmd.exe</text>
+
+    
+    <rect x="50" y="810" width="240" height="310" rx="3" fill="#f8fafc" stroke="#475569" stroke-width="1" />
+    <rect x="50" y="810" width="240" height="26" fill="#f1f5f9" stroke="#475569" stroke-width="1" />
+    <text x="60" y="828" font-size="11" font-weight="bold" fill="#0f172a">1.4 Captured Command Types</text>
+    
+    <text x="60" y="855" font-size="11" font-weight="bold" fill="#0f172a">Type A: Internal Verbs</text>
+    <text x="60" y="872" font-size="10" fill="#334155">• setup &lt;recipe&gt; &lt;dir&gt;</text>
+    <text x="60" y="888" font-size="10" fill="#334155">• push -m &quot;commit&quot;</text>
+    <text x="60" y="904" font-size="10" fill="#334155">• ask / suggest &lt;query&gt;</text>
+    <text x="60" y="920" font-size="10" fill="#334155">• preset save/load &lt;name&gt;</text>
+    
+    <line x1="60" y1="935" x2="270" y2="935" stroke="#cbd5e1" stroke-width="1" />
+
+    <text x="60" y="955" font-size="11" font-weight="bold" fill="#0f172a">Type B: Native Shell Commands</text>
+    <text x="60" y="972" font-size="10" fill="#334155">• Filesystem: ls, cd, rm, cp, mv</text>
+    <text x="60" y="988" font-size="10" fill="#334155">• Process: top, ps, kill, htop</text>
+    <text x="60" y="1004" font-size="10" fill="#334155">• DevOps: docker, kubectl, ssh</text>
+    <text x="60" y="1020" font-size="10" fill="#334155">• Compilers: gcc, cargo, go, node</text>
+
+    <rect x="60" y="1040" width="220" height="60" rx="2" fill="#ffffff" stroke="#0f172a" stroke-width="1" />
+    <text x="170" y="1060" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">Raw Key Stream Pipeline</text>
+    <text x="170" y="1076" font-size="9" fill="#475569" text-anchor="middle">Non-blocking stdin event listener</text>
+    <text x="170" y="1090" font-size="9" font-family="monospace" fill="#0f172a" text-anchor="middle">emit('line', inputBuffer)</text>
+  </g>
+
+  
+  <line x1="305" y1="520" x2="350" y2="520" stroke="#0f172a" stroke-width="2" marker-end="arr-black" />
+
+  
+  
+  
+  <g>
+    
+    <rect x="350" y="100" width="310" height="1040" rx="4" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+    <rect x="350" y="100" width="310" height="38" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5" />
+    
+    <rect x="360" y="110" width="32" height="18" rx="2" fill="#0f172a" />
+    <text x="376" y="123" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">Node</text>
+    <text x="515" y="125" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">STAGE 2: ROUTER &amp; PTY ENGINE</text>
+
+    
+    <rect x="370" y="155" width="270" height="150" rx="3" fill="#f8fafc" stroke="#475569" stroke-width="1" />
+    <rect x="370" y="155" width="270" height="26" fill="#f1f5f9" stroke="#475569" stroke-width="1" />
+    <text x="380" y="173" font-size="11" font-weight="bold" fill="#0f172a">2.1 Lexical Analysis &amp; Parser</text>
+    <text x="380" y="198" font-size="10.5" fill="#334155">• Strips leading whitespace &amp; escapes</text>
+    <text x="380" y="216" font-size="10.5" fill="#334155">• Tokenizes into: Verb, Flags, Target</text>
+    <text x="380" y="234" font-size="10.5" fill="#334155">• Evaluates composite Git push patterns</text>
+    <text x="380" y="252" font-size="10.5" fill="#334155">• Levenshtein Distance Fuzzy Matcher</text>
+    <rect x="380" y="266" width="250" height="26" rx="2" fill="#ffffff" stroke="#94a3b8" stroke-width="1" />
+    <text x="390" y="283" font-size="9.5" font-family="monospace" fill="#0f172a">matchCommand(line) -&gt; Action</text>
+
+    
+    <polygon points="505,330 625,385 505,440 385,385" fill="#ffffff" stroke="#0f172a" stroke-width="2" />
+    <text x="505" y="380" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">Is Registered</text>
+    <text x="505" y="396" font-size="12" font-weight="bold" fill="#0f172a" text-anchor="middle">RapidFire Command?</text>
+
+    
+    <path d="M 385 385 L 365 385 L 365 520 L 385 520" fill="none" stroke="#475569" stroke-width="2" marker-end="arr-black" />
+    <text x="350" y="460" font-size="11" font-weight="bold" fill="#475569" transform="rotate(-90 350 460)">[NO] Native Shell</text>
+
+    
+    <rect x="370" y="480" width="270" height="250" rx="3" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+    <rect x="370" y="480" width="270" height="26" fill="#f1f5f9" stroke="#475569" stroke-width="1" />
+    <text x="380" y="498" font-size="11" font-weight="bold" fill="#0f172a">2.3 node-pty Stream Multiplexer</text>
+    <text x="380" y="522" font-size="10.5" fill="#334155">• Kernel Subsystem: <tspan font-family="monospace">forkpty(3)</tspan> / ConPTY</text>
+    <text x="380" y="540" font-size="10.5" fill="#334155">• Spawns headless OS child process</text>
+    <text x="380" y="558" font-size="10.5" fill="#334155">• Preserves terminal raw mode</text>
+    <text x="380" y="576" font-size="10.5" fill="#334155">• Captures cursor movements &amp; colors</text>
+    <text x="380" y="594" font-size="10.5" fill="#334155">• Window Resize Event (<tspan font-family="monospace">SIGWINCH</tspan>)</text>
+    <text x="380" y="612" font-size="10.5" fill="#334155">• Bidirectional stream piping:</text>
+    
+    <rect x="380" y="626" width="250" height="52" rx="2" fill="#ffffff" stroke="#94a3b8" stroke-width="1" />
+    <text x="390" y="644" font-size="9" font-family="monospace" fill="#0f172a">pty.write(stdinBuffer)</text>
+    <text x="390" y="662" font-size="9" font-family="monospace" fill="#0f172a">pty.onData((data) =&gt; stdout.write(data))</text>
+
+    <rect x="380" y="688" width="250" height="30" rx="2" fill="#0f172a" />
+    <text x="505" y="708" font-size="10.5" font-weight="bold" fill="#ffffff" text-anchor="middle">&lt; 2.0 ms Pass-through Overhead</text>
+
+    
+    <path d="M 625 385 L 645 385 L 645 780 L 590 780" fill="none" stroke="#0f172a" stroke-width="2" marker-end="arr-black" />
+    <text x="650" y="460" font-size="11" font-weight="bold" fill="#0f172a" transform="rotate(90 650 460)">[YES] RapidFire Operation</text>
+
+    
+    <rect x="370" y="760" width="270" height="360" rx="3" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+    <rect x="370" y="760" width="270" height="26" fill="#f1f5f9" stroke="#475569" stroke-width="1" />
+    <text x="380" y="778" font-size="11" font-weight="bold" fill="#0f172a">2.4 Execution Dispatcher Engine</text>
+    
+    <text x="380" y="805" font-size="10.5" fill="#334155">• Injects working directory context (<tspan font-family="monospace">cwd</tspan>)</text>
+    <text x="380" y="823" font-size="10.5" fill="#334155">• Ingests local project manifest (<tspan font-family="monospace">.rapidfire.json</tspan>)</text>
+    <text x="380" y="841" font-size="10.5" fill="#334155">• Asynchronous execution wrapper</text>
+    <text x="380" y="859" font-size="10.5" fill="#334155">• Active spinner animation control</text>
+    <text x="380" y="877" font-size="10.5" fill="#334155">• Process Signal Trap (<tspan font-family="monospace">SIGINT, SIGTERM</tspan>)</text>
+
+    
+    <rect x="380" y="895" width="250" height="42" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="390" y="912" font-size="10" font-weight="bold" fill="#0f172a">Route A: 'setup'</text>
+    <text x="390" y="927" font-size="9" fill="#475569">Target: Fullstack Scaffolding Pipeline</text>
+
+    <rect x="380" y="945" width="250" height="42" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="390" y="962" font-size="10" font-weight="bold" fill="#0f172a">Route B: 'push'</text>
+    <text x="390" y="977" font-size="9" fill="#475569">Target: DevSecOps Git Guardrail</text>
+
+    <rect x="380" y="995" width="250" height="42" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="390" y="1012" font-size="10" font-weight="bold" fill="#0f172a">Route C: 'ask' / 'suggest'</text>
+    <text x="390" y="1027" font-size="9" fill="#475569">Target: Multi-Model AI Assistant</text>
+
+    <rect x="380" y="1045" width="250" height="42" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="390" y="1062" font-size="10" font-weight="bold" fill="#0f172a">Route D: 'preset'</text>
+    <text x="390" y="1077" font-size="9" fill="#475569">Target: Deterministic State Engine</text>
+
+    <rect x="380" y="1095" width="250" height="18" fill="#e2e8f0" />
+    <text x="505" y="1108" font-size="9" font-style="italic" fill="#334155" text-anchor="middle">Non-blocking Event Loop Dispatch</text>
+  </g>
+
+  
+  
+  
+  <path d="M 630 916 L 685 916 L 685 195 L 720 195" fill="none" stroke="#0f172a" stroke-width="2" marker-end="arr-black" />
+  <path d="M 630 966 L 695 966 L 695 445 L 720 445" fill="none" stroke="#0f172a" stroke-width="2" marker-end="arr-black" />
+  <path d="M 630 1016 L 705 1016 L 705 700 L 720 700" fill="none" stroke="#0f172a" stroke-width="2" marker-end="arr-black" />
+  <path d="M 630 1066 L 720 1066" fill="none" stroke="#0f172a" stroke-width="2" marker-end="arr-black" />
+
+  
+  
+  
+
+  
+  
+  
+  <g>
+    <rect x="730" y="100" width="700" height="235" rx="4" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+    <rect x="730" y="100" width="700" height="34" fill="#f1f5f9" stroke="#0f172a" stroke-width="1.5" />
+    <text x="750" y="123" font-size="12" font-weight="bold" fill="#0f172a">PIPELINE 1: DETERMINISTIC FULLSTACK SCAFFOLDING ENGINE</text>
+    <text x="1410" y="123" font-size="11" font-family="monospace" fill="#334155" text-anchor="end">setup &lt;recipe&gt; &lt;dir&gt;</text>
+
+    
+    <rect x="745" y="145" width="205" height="175" rx="3" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+    <rect x="745" y="145" width="205" height="22" fill="#e2e8f0" />
+    <text x="755" y="160" font-size="10" font-weight="bold" fill="#0f172a">Step 1.1: Recipe Matrix (13 Stacks)</text>
+    
+    
+    <rect x="755" y="174" width="42" height="18" rx="2" fill="#0f172a" />
+    <text x="776" y="187" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">React</text>
+    <text x="805" y="187" font-size="9.5" fill="#334155">Vite 5 SPA (Port 3000)</text>
+
+    
+    <rect x="755" y="196" width="42" height="18" rx="2" fill="#334155" />
+    <text x="776" y="209" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">Vue</text>
+    <text x="805" y="209" font-size="9.5" fill="#334155">Vue 3 SPA (Port 3000)</text>
+
+    
+    <rect x="755" y="218" width="42" height="18" rx="2" fill="#475569" />
+    <text x="776" y="231" font-size="8.5" font-weight="bold" fill="#ffffff" text-anchor="middle">Svelte</text>
+    <text x="805" y="231" font-size="9.5" fill="#334155">Svelte Core (Port 3000)</text>
+
+    
+    <rect x="755" y="240" width="42" height="18" rx="2" fill="#0f172a" />
+    <text x="776" y="253" font-size="8.5" font-weight="bold" fill="#ffffff" text-anchor="middle">FastAPI</text>
+    <text x="805" y="253" font-size="9.5" fill="#334155">Python (Port 8000)</text>
+
+    
+    <rect x="755" y="262" width="42" height="18" rx="2" fill="#334155" />
+    <text x="776" y="275" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">Django</text>
+    <text x="805" y="275" font-size="9.5" fill="#334155">REST Framework</text>
+
+    
+    <rect x="755" y="284" width="42" height="18" rx="2" fill="#475569" />
+    <text x="776" y="297" font-size="8.5" font-weight="bold" fill="#ffffff" text-anchor="middle">Node</text>
+    <text x="805" y="297" font-size="9.5" fill="#334155">Express.js (Port 5000)</text>
+
+    
+    <line x1="950" y1="230" x2="975" y2="230" stroke="#0f172a" stroke-width="1.5" marker-end="arr-black" />
+
+    
+    <rect x="980" y="145" width="220" height="175" rx="3" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+    <rect x="980" y="145" width="220" height="22" fill="#e2e8f0" />
+    <text x="990" y="160" font-size="10" font-weight="bold" fill="#0f172a">Step 1.2: Template Resolution</text>
+    
+    <text x="990" y="184" font-size="10" font-weight="bold" fill="#0f172a">1. Primary Online Fetch:</text>
+    <text x="990" y="198" font-size="9" font-family="monospace" fill="#475569">degit vitejs/vite/packages...</text>
+    
+    <text x="990" y="220" font-size="10" font-weight="bold" fill="#0f172a">2. Offline Fallback Generator:</text>
+    <text x="990" y="234" font-size="9" fill="#334155">• Emits clean package.json</text>
+    <text x="990" y="248" font-size="9" fill="#334155">• vite.config.js / App.jsx</text>
+    <text x="990" y="262" font-size="9" fill="#334155">• Pre-wired CORS middleware</text>
+    <text x="990" y="276" font-size="9" fill="#334155">• Python venv creation: venv/</text>
+    <text x="990" y="292" font-size="9" font-weight="bold" fill="#0f172a">✔ Zero External Dependency</text>
+
+    
+    <line x1="1200" y1="230" x2="1225" y2="230" stroke="#0f172a" stroke-width="1.5" marker-end="arr-black" />
+
+    
+    <rect x="1230" y="145" width="185" height="175" rx="3" fill="#f8fafc" stroke="#0f172a" stroke-width="1.2" />
+    <rect x="1230" y="145" width="185" height="22" fill="#e2e8f0" />
+    <text x="1240" y="160" font-size="10" font-weight="bold" fill="#0f172a">Step 1.3: Security &amp; Manifest</text>
+    
+    <text x="1240" y="185" font-size="10" font-weight="bold" fill="#0f172a">1. Manifest Generation:</text>
+    <text x="1240" y="200" font-size="9" font-family="monospace" fill="#334155">.rapidfire.json</text>
+    <text x="1240" y="214" font-size="8.5" fill="#64748b">Port map, recipe type, time</text>
+
+    <text x="1240" y="238" font-size="10" font-weight="bold" fill="#0f172a">2. Git Hook Installation:</text>
+    <text x="1240" y="253" font-size="9" font-family="monospace" fill="#334155">.git/hooks/pre-push</text>
+    <text x="1240" y="268" font-size="8.5" fill="#64748b">In-flight GitLeaks runner</text>
+    <text x="1240" y="282" font-size="8.5" font-weight="bold" fill="#0f172a">chmod +x pre-push</text>
+    <text x="1240" y="304" font-size="9" font-style="italic" fill="#0f172a">Emitted in &lt; 3.0 Seconds</text>
+  </g>
+
+  
+  
+  
+  <g>
+    <rect x="730" y="350" width="700" height="245" rx="4" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+    <rect x="730" y="350" width="700" height="34" fill="#f1f5f9" stroke="#0f172a" stroke-width="1.5" />
+    <text x="750" y="373" font-size="12" font-weight="bold" fill="#0f172a">PIPELINE 2: DEVSECOPS IN-FLIGHT GIT GUARDRAIL</text>
+    <text x="1410" y="373" font-size="11" font-family="monospace" fill="#334155" text-anchor="end">push -m &quot;commit msg&quot;</text>
+
+    
+    <rect x="745" y="395" width="180" height="185" rx="3" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+    <rect x="745" y="395" width="180" height="22" fill="#e2e8f0" />
+    <text x="755" y="410" font-size="10" font-weight="bold" fill="#0f172a">Step 2.1: Git Staging Audit</text>
+    
+    <text x="755" y="435" font-size="10" fill="#334155">• Verifies .git directory</text>
+    <text x="755" y="452" font-size="10" fill="#334155">• Checks working tree diff:</text>
+    <text x="755" y="468" font-size="9" font-family="monospace" fill="#0f172a">git diff --staged</text>
+    <text x="755" y="485" font-size="10" fill="#334155">• Detects active branch</text>
+    <text x="755" y="502" font-size="10" fill="#334155">• Staging synchronization:</text>
+    <text x="755" y="518" font-size="9" font-family="monospace" fill="#0f172a">git add .</text>
+    <text x="755" y="538" font-size="9.5" fill="#64748b">• Pre-commit rollback state</text>
+    <text x="755" y="555" font-size="9" font-style="italic" fill="#0f172a">Zero manual git juggling</text>
+
+    
+    <line x1="925" y1="485" x2="950" y2="485" stroke="#0f172a" stroke-width="1.5" marker-end="arr-black" />
+
+    
+    <rect x="955" y="395" width="220" height="185" rx="3" fill="#f8fafc" stroke="#0f172a" stroke-width="1.2" />
+    <rect x="955" y="395" width="220" height="22" fill="#e2e8f0" />
+    
+    <rect x="965" y="398" width="14" height="14" fill="#0f172a" />
+    <text x="972" y="409" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle">S</text>
+    <text x="985" y="410" font-size="10" font-weight="bold" fill="#0f172a">Step 2.2: GitLeaks Engine</text>
+
+    <text x="965" y="435" font-size="10" font-weight="bold" fill="#0f172a">160+ Secret Signature Rules:</text>
+    <text x="965" y="452" font-size="9" fill="#334155">• AWS Access &amp; Secret Keys</text>
+    <text x="965" y="468" font-size="9" fill="#334155">• GitHub Personal Tokens (ghp_)</text>
+    <text x="965" y="484" font-size="9" fill="#334155">• OpenAI / Anthropic Keys (sk-)</text>
+    <text x="965" y="500" font-size="9" fill="#334155">• Stripe Live Keys (sk_live_)</text>
+    <text x="965" y="516" font-size="9" fill="#334155">• Google Gemini Keys (AIzaSy)</text>
+    <text x="965" y="532" font-size="9" fill="#334155">• DB Connection URIs &amp; Private RSA</text>
+    <text x="965" y="555" font-size="9.5" font-weight="bold" fill="#0f172a">In-Flight Entropy Verification</text>
+
+    
+    <path d="M 1175 450 L 1205 450 L 1205 435 L 1215 435" fill="none" stroke="#0f172a" stroke-width="1.5" marker-end="arr-black" />
+    <path d="M 1175 520 L 1205 520 L 1205 535 L 1215 535" fill="none" stroke="#0f172a" stroke-width="1.5" marker-end="arr-black" />
+
+    
+    <g>
+      
+      <rect x="1220" y="405" width="195" height="75" rx="3" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+      <rect x="1220" y="405" width="195" height="20" fill="#0f172a" />
+      <text x="1230" y="419" font-size="9.5" font-weight="bold" fill="#ffffff">DECISION: LEAK DETECTED</text>
+      <text x="1230" y="440" font-size="9" font-weight="bold" fill="#0f172a">1. Abort Git Push Transaction</text>
+      <text x="1230" y="454" font-size="8.5" fill="#334155">2. Output File, Line #, Token Type</text>
+      <text x="1230" y="468" font-size="8.5" fill="#334155">3. Provide Redaction Command</text>
+
+      
+      <rect x="1220" y="500" width="195" height="85" rx="3" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+      <rect x="1220" y="500" width="195" height="20" fill="#e2e8f0" />
+      <text x="1230" y="514" font-size="9.5" font-weight="bold" fill="#0f172a">DECISION: CLEAN STATE</text>
+      <text x="1230" y="534" font-size="9" fill="#0f172a">• Verify GitHub Auth: <tspan font-family="monospace">gh auth</tspan></text>
+      <text x="1230" y="549" font-size="9" fill="#0f172a">• Auto Create: <tspan font-family="monospace">gh repo create</tspan></text>
+      <text x="1230" y="564" font-size="9" fill="#0f172a">• Atomic Push: <tspan font-family="monospace">git push origin</tspan></text>
+      <text x="1230" y="578" font-size="8.5" font-weight="bold" fill="#334155">Zero Leaks Reached Remote</text>
+    </g>
+  </g>
+
+  
+  
+  
+  <g>
+    <rect x="730" y="610" width="700" height="245" rx="4" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+    <rect x="730" y="610" width="700" height="34" fill="#f1f5f9" stroke="#0f172a" stroke-width="1.5" />
+    <text x="750" y="633" font-size="12" font-weight="bold" fill="#0f172a">PIPELINE 3: CONTEXTUAL AI ASSISTANT &amp; 1-CLICK depInstaller</text>
+    <text x="1410" y="633" font-size="11" font-family="monospace" fill="#334155" text-anchor="end">ask / suggest</text>
+
+    
+    <rect x="745" y="655" width="180" height="185" rx="3" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+    <rect x="745" y="655" width="180" height="22" fill="#e2e8f0" />
+    <text x="755" y="670" font-size="10" font-weight="bold" fill="#0f172a">Step 3.1: Context Ingestion</text>
+    
+    <text x="755" y="695" font-size="10" fill="#334155">• Captured Shell stderr:</text>
+    <text x="755" y="709" font-size="8.5" font-family="monospace" fill="#0f172a">tail -n 15 error.log</text>
+    <text x="755" y="728" font-size="10" fill="#334155">• Ingests package.json</text>
+    <text x="755" y="744" font-size="10" fill="#334155">• Ingests requirements.txt</text>
+    <text x="755" y="760" font-size="10" fill="#334155">• Active .rapidfire.json</text>
+    <text x="755" y="778" font-size="10" fill="#334155">• Host OS &amp; Shell metadata</text>
+    <rect x="755" y="798" width="160" height="24" rx="2" fill="#ffffff" stroke="#94a3b8" stroke-width="1" />
+    <text x="835" y="814" font-size="9" fill="#0f172a" text-anchor="middle">Sanitized Prompt Payload</text>
+
+    
+    <line x1="925" y1="745" x2="950" y2="745" stroke="#0f172a" stroke-width="1.5" marker-end="arr-black" />
+
+    
+    <rect x="955" y="655" width="220" height="185" rx="3" fill="#f8fafc" stroke="#0f172a" stroke-width="1.2" />
+    <rect x="955" y="655" width="220" height="22" fill="#e2e8f0" />
+    <text x="965" y="670" font-size="10" font-weight="bold" fill="#0f172a">Step 3.2: Pluggable LLM Adapter</text>
+
+    
+    <rect x="965" y="685" width="200" height="42" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <rect x="973" y="695" width="22" height="22" rx="2" fill="#0f172a" />
+    <text x="984" y="710" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">G</text>
+    <text x="1002" y="703" font-size="10.5" font-weight="bold" fill="#0f172a">Google Gemini</text>
+    <text x="1002" y="718" font-size="8.5" fill="#475569">Gemini 1.5/2.0 API SDK</text>
+
+    
+    <rect x="965" y="733" width="200" height="42" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <rect x="973" y="743" width="22" height="22" rx="2" fill="#334155" />
+    <text x="984" y="758" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">Q</text>
+    <text x="1002" y="751" font-size="10.5" font-weight="bold" fill="#0f172a">Groq Cloud LPU</text>
+    <text x="1002" y="766" font-size="8.5" fill="#475569">Llama 3 70B &lt; 0.5s latency</text>
+
+    
+    <rect x="965" y="781" width="200" height="42" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <rect x="973" y="791" width="22" height="22" rx="2" fill="#475569" />
+    <text x="984" y="806" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">O</text>
+    <text x="1002" y="799" font-size="10.5" font-weight="bold" fill="#0f172a">Ollama Local Daemon</text>
+    <text x="1002" y="814" font-size="8.5" fill="#475569">100% Offline / Private</text>
+
+    
+    <line x1="1175" y1="745" x2="1200" y2="745" stroke="#0f172a" stroke-width="1.5" marker-end="arr-black" />
+
+    
+    <rect x="1205" y="655" width="210" height="185" rx="3" fill="#f8fafc" stroke="#0f172a" stroke-width="1.2" />
+    <rect x="1205" y="655" width="210" height="22" fill="#e2e8f0" />
+    <text x="1215" y="670" font-size="10" font-weight="bold" fill="#0f172a">Step 3.3: 1-Click depInstaller</text>
+
+    <text x="1215" y="694" font-size="10" font-weight="bold" fill="#0f172a">1. Regex Token Filter:</text>
+    <text x="1215" y="708" font-size="8.5" fill="#334155">• Matches npm/pip/pnpm installs</text>
+    <text x="1215" y="722" font-size="8.5" fill="#0f172a">• Strips rm -rf, dd, sudo, forkbombs</text>
+
+    <text x="1215" y="744" font-size="10" font-weight="bold" fill="#0f172a">2. Interactive Confirmation:</text>
+    <rect x="1215" y="756" width="190" height="34" rx="2" fill="#0f172a" />
+    <text x="1310" y="772" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle">[Y] Install Missing Package</text>
+    <text x="1310" y="784" font-size="8" fill="#cbd5e1" text-anchor="middle">Execute inside active venv</text>
+
+    <text x="1215" y="814" font-size="9" font-style="italic" fill="#475569">Zero Manual Terminal Retyping</text>
+    <text x="1215" y="830" font-size="8.5" font-family="monospace" fill="#0f172a">pip install &lt;detected_pkg&gt;</text>
+  </g>
+
+  
+  
+  
+  <g>
+    <rect x="730" y="870" width="700" height="270" rx="4" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+    <rect x="730" y="870" width="700" height="34" fill="#f1f5f9" stroke="#0f172a" stroke-width="1.5" />
+    <text x="750" y="893" font-size="12" font-weight="bold" fill="#0f172a">PIPELINE 4: DETERMINISTIC WORKSPACE PRESET &amp; SNAPSHOT ENGINE</text>
+    <text x="1410" y="893" font-size="11" font-family="monospace" fill="#334155" text-anchor="end">preset save / load &lt;name&gt;</text>
+
+    
+    <rect x="745" y="918" width="205" height="205" rx="3" fill="#f8fafc" stroke="#64748b" stroke-width="1" />
+    <rect x="745" y="918" width="205" height="22" fill="#e2e8f0" />
+    <text x="755" y="933" font-size="10" font-weight="bold" fill="#0f172a">Step 4.1: State Traversal</text>
+    
+    <text x="755" y="958" font-size="10" fill="#334155">• Trigger: <tspan font-family="monospace">preset save &lt;id&gt;</tspan></text>
+    <text x="755" y="976" font-size="10" fill="#334155">• Traverses project root</text>
+    <text x="755" y="994" font-size="10" fill="#334155">• Filters node_modules &amp; venv</text>
+    <text x="755" y="1012" font-size="10" fill="#334155">• Extracts package versions</text>
+    <text x="755" y="1030" font-size="10" fill="#334155">• Captures port mappings</text>
+    <text x="755" y="1048" font-size="10" fill="#334155">• Sanitizes environment keys</text>
+    <text x="755" y="1066" font-size="10" fill="#334155">• Preserves script entries</text>
+    <text x="755" y="1092" font-size="9" font-style="italic" fill="#0f172a">Snapshot generated in &lt; 1s</text>
+
+    
+    <line x1="950" y1="1020" x2="975" y2="1020" stroke="#0f172a" stroke-width="1.5" marker-end="arr-black" />
+
+    
+    <rect x="980" y="918" width="220" height="205" rx="3" fill="#f8fafc" stroke="#0f172a" stroke-width="1.2" />
+    <rect x="980" y="918" width="220" height="22" fill="#e2e8f0" />
+    <text x="990" y="933" font-size="10" font-weight="bold" fill="#0f172a">Step 4.2: JSON Tree Serializer</text>
+
+    <text x="990" y="958" font-size="10" font-weight="bold" fill="#0f172a">Schema Output Format:</text>
+    <rect x="990" y="968" width="200" height="95" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="998" y="985" font-size="8.5" font-family="monospace" fill="#0f172a">{</text>
+    <text x="1006" y="999" font-size="8.5" font-family="monospace" fill="#0f172a">&quot;name&quot;: &quot;microservice-v1&quot;,</text>
+    <text x="1006" y="1013" font-size="8.5" font-family="monospace" fill="#0f172a">&quot;recipe&quot;: &quot;react+fastapi&quot;,</text>
+    <text x="1006" y="1027" font-size="8.5" font-family="monospace" fill="#0f172a">&quot;ports&quot;: { &quot;fe&quot;: 3000, &quot;be&quot;: 8000 },</text>
+    <text x="1006" y="1041" font-size="8.5" font-family="monospace" fill="#0f172a">&quot;deps&quot;: [&quot;fastapi&quot;, &quot;cors&quot;]</text>
+    <text x="998" y="1055" font-size="8.5" font-family="monospace" fill="#0f172a">}</text>
+
+    <text x="990" y="1080" font-size="9" fill="#334155">Stored in: ~/.rapidfire/presets/</text>
+    <text x="990" y="1098" font-size="9" font-weight="bold" fill="#0f172a">Deterministic SHA-256 Hash</text>
+
+    
+    <line x1="1200" y1="1020" x2="1225" y2="1020" stroke="#0f172a" stroke-width="1.5" marker-end="arr-black" />
+
+    
+    <rect x="1230" y="918" width="185" height="205" rx="3" fill="#f8fafc" stroke="#0f172a" stroke-width="1.2" />
+    <rect x="1230" y="918" width="185" height="22" fill="#e2e8f0" />
+    <text x="1240" y="933" font-size="10" font-weight="bold" fill="#0f172a">Step 4.3: Instant Re-hydration</text>
+
+    <text x="1240" y="958" font-size="10" fill="#334155">• Trigger: <tspan font-family="monospace">preset load &lt;id&gt;</tspan></text>
+    <text x="1240" y="976" font-size="10" fill="#334155">• Recreates directory tree</text>
+    <text x="1240" y="994" font-size="10" fill="#334155">• Re-generates virtualenvs</text>
+    <text x="1240" y="1012" font-size="10" fill="#334155">• Installs pinned packages</text>
+    <text x="1240" y="1030" font-size="10" fill="#334155">• Wires CORS &amp; port binds</text>
+
+    <rect x="1240" y="1048" width="165" height="34" rx="2" fill="#0f172a" />
+    <text x="1322" y="1066" font-size="9.5" font-weight="bold" fill="#ffffff" text-anchor="middle">✔ Zero Environment Drift</text>
+    <text x="1322" y="1076" font-size="8" fill="#e2e8f0" text-anchor="middle">1-Command Team Sync</text>
+
+    <text x="1240" y="1108" font-size="9" font-style="italic" fill="#475569">Instant developer onboarding</text>
+  </g>
+
+  
+  
+  
+  <path d="M 1430 215 L 1465 215 L 1465 520 L 1485 520" fill="none" stroke="#0f172a" stroke-width="2" marker-end="arr-black" />
+  <path d="M 1430 472 L 1475 472 L 1475 540 L 1485 540" fill="none" stroke="#0f172a" stroke-width="2" marker-end="arr-black" />
+  <path d="M 1430 732 L 1475 732 L 1475 560 L 1485 560" fill="none" stroke="#0f172a" stroke-width="2" marker-end="arr-black" />
+  <path d="M 1430 1005 L 1465 1005 L 1465 580 L 1485 580" fill="none" stroke="#0f172a" stroke-width="2" marker-end="arr-black" />
+
+  
+  
+  
+  <g>
+    
+    <rect x="1495" y="100" width="390" height="1040" rx="4" fill="#ffffff" stroke="#0f172a" stroke-width="1.5" />
+    <rect x="1495" y="100" width="390" height="38" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.5" />
+    <text x="1690" y="125" font-size="13" font-weight="bold" fill="#0f172a" text-anchor="middle">STAGE 4: UNIFIED TERMINAL FEEDBACK</text>
+
+    
+    <rect x="1515" y="155" width="350" height="465" rx="3" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5" />
+    <rect x="1515" y="155" width="350" height="26" fill="#0f172a" />
+    <text x="1530" y="173" font-size="10" font-family="monospace" fill="#ffffff">Terminal Output Stream (stdout/stderr)</text>
+
+    
+    <rect x="1530" y="195" width="320" height="72" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="1545" y="215" font-size="10.5" font-weight="bold" fill="#0f172a">[✓] Scaffolding Complete</text>
+    <text x="1545" y="233" font-size="9.5" fill="#334155">• Fullstack stack emitted in &lt; 2.8s</text>
+    <text x="1545" y="249" font-size="9.5" fill="#334155">• Pre-configured ports: 3000 (fe), 8000 (be)</text>
+    <text x="1545" y="263" font-size="9" font-family="monospace" fill="#64748b">.rapidfire.json manifest verified</text>
+
+    
+    <rect x="1530" y="280" width="320" height="72" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="1545" y="300" font-size="10.5" font-weight="bold" fill="#0f172a">[✓] DevSecOps Shield Verified</text>
+    <text x="1545" y="318" font-size="9.5" fill="#334155">• In-flight diff scan: 0 secret leaks found</text>
+    <text x="1545" y="334" font-size="9.5" fill="#334155">• Remote GitHub repo synchronized via gh</text>
+    <text x="1545" y="348" font-size="9" font-family="monospace" fill="#64748b">Branch 'main' up to date</text>
+
+    
+    <rect x="1530" y="365" width="320" height="72" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="1545" y="385" font-size="10.5" font-weight="bold" fill="#0f172a">[✓] AI Suggestion Intercept</text>
+    <text x="1545" y="403" font-size="9.5" fill="#334155">• Analyzed exit code 1 from stderr</text>
+    <text x="1545" y="419" font-size="9.5" fill="#334155">• 1-click package install prompt presented</text>
+    <text x="1545" y="433" font-size="9" font-family="monospace" fill="#64748b">Press [Y] to install: fastapi-cors</text>
+
+    
+    <rect x="1530" y="450" width="320" height="72" rx="2" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="1545" y="470" font-size="10.5" font-weight="bold" fill="#0f172a">[✓] Workspace Preset Restored</text>
+    <text x="1545" y="488" font-size="9.5" fill="#334155">• State 'microservice-v1' re-hydrated</text>
+    <text x="1545" y="504" font-size="9.5" fill="#334155">• Dependencies and ports restored</text>
+    <text x="1545" y="518" font-size="9" font-family="monospace" fill="#64748b">Zero environmental drift</text>
+
+    
+    <rect x="1530" y="535" width="320" height="68" rx="2" fill="#0f172a" />
+    <text x="1545" y="555" font-size="10.5" font-weight="bold" fill="#ffffff">[✓] PTY Passthrough Fluidity</text>
+    <text x="1545" y="573" font-size="9.5" fill="#e2e8f0">• Continuous raw terminal session</text>
+    <text x="1545" y="589" font-size="9" fill="#94a3b8">Zero context switching required</text>
+
+    
+    <rect x="1515" y="640" width="350" height="480" rx="3" fill="#f8fafc" stroke="#475569" stroke-width="1" />
+    <rect x="1515" y="640" width="350" height="26" fill="#e2e8f0" />
+    <text x="1530" y="658" font-size="11" font-weight="bold" fill="#0f172a">SYSTEM SPECIFICATIONS &amp; METRICS</text>
+
+    <text x="1530" y="690" font-size="11" font-weight="bold" fill="#0f172a">1. Terminal Stream Latency</text>
+    <text x="1530" y="707" font-size="10" fill="#334155">PTY multiplexing delay: &lt; 2.0 ms.</text>
+    <text x="1530" y="722" font-size="9.5" fill="#64748b">Indistinguishable from native Bash/Zsh.</text>
+
+    <text x="1530" y="750" font-size="11" font-weight="bold" fill="#0f172a">2. Shift-Left DevSecOps</text>
+    <text x="1530" y="767" font-size="10" fill="#334155">In-flight regex scan stops credential leaks</text>
+    <text x="1530" y="782" font-size="9.5" fill="#64748b">before packets reach GitHub servers.</text>
+
+    <text x="1530" y="810" font-size="11" font-weight="bold" fill="#0f172a">3. Pre-Wired Fullstack Ports &amp; CORS</text>
+    <text x="1530" y="827" font-size="10" fill="#334155">Eliminates cross-origin 403 errors and</text>
+    <text x="1530" y="842" font-size="9.5" fill="#64748b">port collision crashes on first boot.</text>
+
+    <text x="1530" y="870" font-size="11" font-weight="bold" fill="#0f172a">4. Pluggable AI Adapters</text>
+    <text x="1530" y="887" font-size="10" fill="#334155">Google Gemini, Groq Cloud, or Ollama.</text>
+    <text x="1530" y="902" font-size="9.5" fill="#64748b">100% offline-ready with local LLMs.</text>
+
+    <text x="1530" y="930" font-size="11" font-weight="bold" fill="#0f172a">5. Deterministic Presets</text>
+    <text x="1530" y="947" font-size="10" fill="#334155">JSON tree serialization guarantees</text>
+    <text x="1530" y="962" font-size="9.5" fill="#64748b">identical team workspace synchronization.</text>
+
+    <text x="1530" y="990" font-size="11" font-weight="bold" fill="#0f172a">6. Local-First &amp; Zero Telemetry</text>
+    <text x="1530" y="1007" font-size="10" fill="#334155">Operates completely on local machine.</text>
+    <text x="1530" y="1022" font-size="9.5" fill="#64748b">Zero proprietary cloud lock-in.</text>
+
+    <rect x="1530" y="1050" width="320" height="50" rx="2" fill="#ffffff" stroke="#0f172a" stroke-width="1" />
+    <text x="1690" y="1070" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">Academic Synopsis Figure Reference</text>
+    <text x="1690" y="1086" font-size="9" fill="#475569" text-anchor="middle">Figure 1: Decomposed Architectural Pipeline</text>
+  </g>
+</svg>
+
+  </div>
+  <div class="footer">
+    Academic Mini-Project Synopsis Artifact • Department of Computer Science &amp; Engineering • Greater Noida Institute of Technology (AKTU Lucknow)
+  </div>
+</body>
+</html>

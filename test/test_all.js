@@ -25,7 +25,9 @@ const testScripts = [
   'test/test_highlighter.js',
   'test/test_history.js',
   'test/test_push_command.js',
-  'test/test_repl_prompt.js'
+  'test/test_repl_prompt.js',
+  'test/test_dynamic_scaffolding.js',
+  'test/test_nested_git.js'
 ];
 
 console.log('\n======================================================');

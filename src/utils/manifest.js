@@ -7,12 +7,13 @@ const CURRENT_VERSION = '0.1.0';
 /**
  * Creates and writes a .rapidfire.json manifest in the project root
  */
-function writeManifest(projectDir, { frontend, backend, folderName }) {
+function writeManifest(projectDir, { frontend, backend, folderName, generationMode }) {
   const manifestPath = path.join(projectDir, MANIFEST_FILENAME);
   const data = {
     frontend: frontend || null,
     backend: backend || null,
     folderName: folderName || path.basename(projectDir),
+    generationMode: generationMode || 'predefined',
     createdAt: new Date().toISOString(),
     rapidfireVersion: CURRENT_VERSION
   };

@@ -24,15 +24,15 @@
     "terminal",
     "developer-tools"
   ],
-  "author": "Vedansh Shrivastava (@Debunkem) (https://github.com/Debunkem)",
+  "author": "Vedansh Shrivastava (@VsrCube) (https://github.com/VsrCube)",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Debunkem/rapidfire-cli.git"
+    "url": "git+https://github.com/VsrCube/Rapidfire-Cli.git"
   },
   "bugs": {
-    "url": "https://github.com/Debunkem/rapidfire-cli/issues"
+    "url": "https://github.com/VsrCube/Rapidfire-Cli/issues"
   },
-  "homepage": "https://github.com/Debunkem/rapidfire-cli#readme",
+  "homepage": "https://github.com/VsrCube/Rapidfire-Cli#readme",
   "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "^0.24.0",

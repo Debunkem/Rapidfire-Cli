@@ -33,6 +33,10 @@ ${bold}PROJECT SCAFFOLDING RECIPES (7 FRAMEWORKS / 13 OPTIONS):${reset}
     ${green}setup fastapi <folder>${reset}         Standalone high-performance FastAPI backend
     ${green}setup django <folder>${reset}          Standalone Django backend with SQLite
 
+  ${cyan}Dynamic & Composed Framework Scaffolding:${reset}
+    ${green}setup <unknown> <folder>${reset}       Dynamically scaffold any framework (e.g. astro, solid, nextjs, nestjs)
+    ${green}setup <fe>+<be> <folder>${reset}       Arbitrary stack combinations (e.g. svelte+fastapi, vue+flask)
+
   ${cyan}Initialization:${reset}
     ${green}init [rapidfire]${reset}              Interactive scaffolding guide & prompt
 

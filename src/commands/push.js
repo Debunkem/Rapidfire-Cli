@@ -1,6 +1,8 @@
 const path = require('path');
 const { run, runCapture } = require('../utils/proc');
 const { isGhInstalled, isGhAuthenticated, createRepo } = require('../integrations/gh');
+const { installPrePushHook } = require('../integrations/gitleaks');
+const { promptConfirmation } = require('../utils/gitContext');
 
 /**
  * Splits command line or args array preserving double and single quotes
@@ -218,13 +220,25 @@ async function handlePush(rawArgs, context = {}) {
   } catch {}
 
   if (!inGit) {
-    console.log(`\n${yellow}[rapidfire-git] No git repository found in current directory.${reset}`);
+    console.log(`\n${yellow}[rapidfire-git] No Git repository found in current directory.${reset}`);
+    const initPrompt = `${bold}Would you like to initialize a new Git repository now? (Y/N):${reset} `;
+
+    const isInteractive = Boolean(context && (typeof context.ask === 'function' || context.rl));
+    const defaultChoice = isInteractive ? 'n' : (process.env.RAPIDFIRE_AUTO_GIT === '1' ? 'y' : 'n');
+    const shouldInit = await promptConfirmation(context, initPrompt, defaultChoice);
+
+    if (!shouldInit) {
+      console.error(`${red}[rapidfire-git] Push aborted: working directory is not a Git repository.${reset}`);
+      return { success: false, aborted: true, error: 'Not a git repository' };
+    }
+
     console.log(`${cyan}[rapidfire-git] Initializing git repository (main branch)...${reset}`);
     try {
       run('git init -b main', { cwd, stdio: 'ignore' });
     } catch {
       run('git init', { cwd, stdio: 'ignore' });
     }
+    installPrePushHook(cwd);
   }
 
   // 2. Resolve target branch
